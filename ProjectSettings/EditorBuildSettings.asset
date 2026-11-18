@@ -5,8 +5,27 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 0
+    path: Assets/_ArcanoDungeon/Scenes/Bootstrap.unity
+    guid: 71403b01a0104df3a0a4f5fe90661677
+  - enabled: 1
+    path: Assets/_ArcanoDungeon/Scenes/MainMenu.unity
+    guid: 639c2b58ae4448ef839f42ca1670a8c3
+  - enabled: 1
+    path: Assets/_ArcanoDungeon/Scenes/CharacterSelection.unity
+    guid: abdd35a1ac62444a951f188af35ba129
+  - enabled: 1
+    path: Assets/_ArcanoDungeon/Scenes/ForestLevel.unity
+    guid: f8f92c22d28c42ed83fdbe9aacdcbe6d
+  - enabled: 1
+    path: Assets/_ArcanoDungeon/Scenes/CatacombsLevel.unity
+    guid: 4aa02a93a0b3432082b72d4b30730eab
+  - enabled: 1
+    path: Assets/_ArcanoDungeon/Scenes/CastleLevel.unity
+    guid: b6e3fe5c94c543b18d28a658a00af25c
   m_configObjects:
+    com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
