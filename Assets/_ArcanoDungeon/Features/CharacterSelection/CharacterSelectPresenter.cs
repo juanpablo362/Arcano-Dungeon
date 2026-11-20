@@ -1,59 +1,88 @@
 using System.Collections;
 using System.Collections.Generic;
+using ArcanoDungeon.Infrastructure.Audio;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class CharacterSelectPresenter : MonoBehaviour
 {
-    static readonly Vector3[] SlotPos =
+    [SerializeField] AudioClip menuMusic;
+    [SerializeField] float menuMusicVolume = 0.5f;
+
+    static readonly Color Gold = new Color(0.93f, 0.78f, 0.32f);
+    static readonly Color GoldSoft = new Color(0.93f, 0.78f, 0.32f, 0.55f);
+    static readonly Color Ink = new Color(0.93f, 0.90f, 0.82f);
+    static readonly Color InkMuted = new Color(0.72f, 0.68f, 0.58f);
+    static readonly Color PanelInk = new Color(0.94f, 0.91f, 0.82f);
+    static readonly Color PanelMuted = new Color(0.72f, 0.68f, 0.58f);
+    static readonly Color ClassReadable = new Color(0.96f, 0.86f, 0.58f);
+
+    static readonly Dictionary<string, string> AbilityHints = new Dictionary<string, string>
     {
-        new Vector3(-1.62f, 0f, 0.18f),
-        new Vector3(0f, 0f, -0.08f),
-        new Vector3(1.62f, 0f, 0.18f),
+        { "staff", "Bastón. Lanza hechizos a distancia." },
+        { "spark", "Chispa. Un estallido mágico rápido." },
+        { "ward", "Amuleto. Refuerza la defensa." },
+        { "shadow", "Sombra. Movimiento sigiloso." },
+        { "shield", "Escudo. Bloquea los golpes de frente." },
+        { "swords", "Espadas. Ataque cuerpo a cuerpo." },
     };
 
-    static readonly Vector3 SelectedStep = new Vector3(0f, 0f, -0.42f);
-    static readonly Color Ink = new Color(0.1f, 0.12f, 0.16f);
-    static readonly Color InkSoft = new Color(0.38f, 0.41f, 0.46f);
+    // KayKit (Generic / Rig_Medium) — héroes Elara/Lyra/Kaede.
+    static readonly string[] KayKitGestureClips =
+    {
+        "Assets/chibi_asssets/KayKit_Character_Animations_1.1/KayKit_Character_Animations_1.1/Animations/fbx/Rig_Medium/Rig_Medium_CombatRanged.fbx|Ranged_Magic_Raise",
+        "Assets/chibi_asssets/KayKit_Character_Animations_1.1/KayKit_Character_Animations_1.1/Animations/fbx/Rig_Medium/Rig_Medium_CombatMelee.fbx|Melee_1H_Attack_Chop",
+        "Assets/chibi_asssets/KayKit_Character_Animations_1.1/KayKit_Character_Animations_1.1/Animations/fbx/Rig_Medium/Rig_Medium_Simulation.fbx|Waving",
+        "Assets/chibi_asssets/KayKit_Character_Animations_1.1/KayKit_Character_Animations_1.1/Animations/fbx/Rig_Medium/Rig_Medium_Simulation.fbx|Cheering",
+    };
 
-    static readonly string[] GestureClips =
+    // Humanoid (Magus/Aldric/Misaki/Yuko) — Asuna retarget.
+    static readonly string[] HumanoidGestureClips =
     {
         "Assets/FreeTestCharacterAsuna/FBX/Animations/023OneHandMeleeWeapon.fbx|AttackRightHand",
         "Assets/FreeTestCharacterAsuna/FBX/Animations/009Conversation.fbx|ConversationYes",
         "Assets/FreeTestCharacterAsuna/FBX/Animations/022Unarmed.fbx|PunchRight",
+        "Assets/FreeTestCharacterAsuna/FBX/Animations/009Conversation.fbx|ConversationYes",
     };
 
-    static AnimationClip[] gestures;
+    static readonly string[] StatNames = { "Salud", "Ataque", "Defensa", "Velocidad" };
 
+    Transform heroStage;
     Transform[] pivots;
     Quaternion[] pivotBase;
-    Light[] accentLights;
-    Renderer[] rings;
     Animator[] animators;
     float[] gestureLengths;
     Coroutine gestureRoutine;
-    RectTransform[] nameRoots;
-    Text[] nameLabels;
-    Text[] titleLabels;
-    Text[] indexLabels;
-    Image[] indexBars;
-    RectTransform[] meterRoots;
-    Image[] meterFills;
-    Text[] meterRoles;
-    Text statName;
-    Text statClass;
-    Text statSummary;
-    Text statAbility;
+
+    RectTransform[] cardRoots;
+    Image[] cardBorders;
+    Image[] cardPortraits;
+    Text[] cardNames;
+    Text[] cardTitles;
+    Image[] cardStars;
+
+    Text headerName;
+    Text headerClass;
+    Text description;
+    Image[] statFills;
     Text[] statValues;
-    Image statsRule;
-    RectTransform canvasRect;
+    Image[] abilityIcons;
+
+    Light stageLight;
     int selected = -1;
 
     void OnEnable()
     {
         Rebind();
+        EnsureMenuMusic();
+    }
+
+    void EnsureMenuMusic()
+    {
+        PersistentMenuMusic.EnsurePlaying(menuMusic, menuMusicVolume);
     }
 
     void Update()
@@ -80,34 +109,14 @@ public class CharacterSelectPresenter : MonoBehaviour
                 BackToMenu();
         }
 
-        var step = 6f * Time.deltaTime;
-        for (var i = 0; i < pivots.Length; i++)
-        {
-            if (pivots[i] == null)
-                continue;
+        if (pivots == null || selected < 0 || selected >= pivots.Length || pivots[selected] == null)
+            return;
 
-            var forward = i == selected ? SelectedStep : Vector3.zero;
-            pivots[i].localPosition = Vector3.Lerp(pivots[i].localPosition, SlotPos[i] + forward, step);
+        var yaw = Mathf.Sin(Time.time * 0.45f) * 4f;
+        pivots[selected].localRotation = pivotBase[selected] * Quaternion.Euler(0f, yaw, 0f);
 
-            var yaw = Mathf.Sin((Time.time + i * 1.4f) * 0.45f) * 0.8f;
-            pivots[i].localRotation = pivotBase[i] * Quaternion.Euler(0f, yaw, 0f);
-
-            if (accentLights[i] != null)
-                accentLights[i].intensity = i == selected ? 1.5f : 0.15f;
-
-            if (rings[i] != null)
-            {
-                var pulse = i == selected ? 1f + Mathf.Sin(Time.time * 2.2f) * 0.03f : 1f;
-                var width = i == selected ? 1.42f : 1.12f;
-                rings[i].transform.localScale = new Vector3(width * pulse, 0.003f, width * pulse);
-            }
-        }
-    }
-
-    void LateUpdate()
-    {
-        if (Application.isPlaying)
-            FollowNames();
+        if (stageLight != null)
+            stageLight.intensity = 0.32f + Mathf.Sin(Time.time * 2.1f) * 0.02f;
     }
 
     void Select(int index)
@@ -118,67 +127,108 @@ public class CharacterSelectPresenter : MonoBehaviour
         selected = (index % HeroRoster.All.Length + HeroRoster.All.Length) % HeroRoster.All.Length;
         var profile = HeroRoster.All[selected];
         GameSession.SelectedHero = profile.Id;
+        PlayerPrefs.SetInt("SelectedCharacter", (int)profile.Id);
 
         if (pivots != null)
         {
             for (var i = 0; i < pivots.Length; i++)
             {
-                var on = i == selected;
-                var accent = HeroRoster.All[i].Accent;
-
-                if (rings != null && rings[i] != null)
-                {
-                    var mat = rings[i].sharedMaterial;
-                    if (mat != null)
-                    {
-                        mat.SetColor("_BaseColor", accent * (on ? 1f : 0.45f));
-                        mat.SetColor("_EmissionColor", accent * (on ? 1.8f : 0.25f));
-                    }
-                }
-
-                if (nameLabels != null && nameLabels[i] != null)
-                    nameLabels[i].color = on ? Ink : new Color(Ink.r, Ink.g, Ink.b, 0.38f);
-                if (titleLabels != null && titleLabels[i] != null)
-                    titleLabels[i].color = on ? InkSoft : new Color(InkSoft.r, InkSoft.g, InkSoft.b, 0.4f);
-                if (meterRoles != null && meterRoles[i] != null)
-                    meterRoles[i].text = on ? "Vanguardia" : "";
-                if (meterFills != null && meterFills[i] != null)
-                    meterFills[i].color = on ? new Color(0.16f, 0.48f, 0.95f) : new Color(0.62f, 0.66f, 0.72f);
-                if (indexLabels != null && indexLabels[i] != null)
-                {
-                    indexLabels[i].color = on ? Ink : InkSoft;
-                    indexLabels[i].fontStyle = on ? FontStyle.Bold : FontStyle.Normal;
-                }
-
-                if (indexBars != null && indexBars[i] != null)
-                    indexBars[i].color = on ? new Color(1f, 1f, 1f, 0.82f) : new Color(1f, 1f, 1f, 0f);
+                if (pivots[i] != null)
+                    pivots[i].gameObject.SetActive(i == selected);
             }
         }
 
-        if (statName != null)
-            statName.text = profile.Name;
-        if (statClass != null)
+        if (cardRoots != null)
         {
-            statClass.text = profile.Title;
-            statClass.color = InkSoft;
+            for (var i = 0; i < cardRoots.Length; i++)
+            {
+                var on = i == selected;
+                if (cardBorders != null && cardBorders[i] != null)
+                    cardBorders[i].color = on ? Gold : new Color(Gold.r, Gold.g, Gold.b, 0.28f);
+                if (cardNames != null && cardNames[i] != null)
+                    cardNames[i].color = on ? Gold : Ink;
+                if (cardTitles != null && cardTitles[i] != null)
+                    cardTitles[i].color = on ? ClassReadable : InkMuted;
+                if (cardStars != null && cardStars[i] != null)
+                    cardStars[i].enabled = on;
+            }
         }
 
-        if (statSummary != null)
-            statSummary.text = profile.Name;
-        if (statAbility != null)
-            statAbility.text = profile.Ability + "   ·   " + profile.Summary;
-
-        if (statsRule != null)
-            statsRule.color = profile.Accent;
-        if (statValues != null)
+        if (headerName != null)
         {
-            int[] values = { profile.Health, profile.Attack, profile.Defense, profile.Speed, profile.Crit };
-            for (var i = 0; i < statValues.Length && i < values.Length; i++)
-                statValues[i].text = values[i].ToString();
+            headerName.text = profile.Name;
+            headerName.color = Gold;
+        }
+        if (headerClass != null)
+        {
+            headerClass.text = profile.Title.ToUpperInvariant();
+            headerClass.color = ClassReadable;
         }
 
-        FollowNames();
+        if (description != null)
+        {
+            description.text = profile.Summary;
+            description.color = PanelInk;
+        }
+
+        if (statFills != null && statValues != null)
+        {
+            int[] values = { profile.Health, profile.Attack, profile.Defense, profile.Speed };
+            for (var i = 0; i < values.Length; i++)
+            {
+                if (statValues[i] != null)
+                {
+                    statValues[i].text = values[i].ToString();
+                    statValues[i].color = Gold;
+                }
+                if (statFills[i] != null)
+                    SetStatFill(statFills[i], values[i]);
+            }
+        }
+
+        if (abilityIcons != null && profile.Abilities != null)
+        {
+            for (var i = 0; i < abilityIcons.Length; i++)
+            {
+                if (abilityIcons[i] == null)
+                    continue;
+                if (i < profile.Abilities.Length)
+                {
+                    var icon = Resources.Load<Sprite>(profile.Abilities[i]);
+                    abilityIcons[i].sprite = icon;
+                    abilityIcons[i].enabled = icon != null;
+                    abilityIcons[i].color = new Color(0.55f, 0.78f, 1f, 1f);
+                    abilityIcons[i].raycastTarget = true;
+                    var hint = abilityIcons[i].GetComponent<AbilityHint>();
+                    if (hint == null)
+                        hint = abilityIcons[i].gameObject.AddComponent<AbilityHint>();
+                    AbilityHints.TryGetValue(profile.Abilities[i], out var text);
+                    hint.Text = text;
+                }
+                else
+                {
+                    abilityIcons[i].enabled = false;
+                }
+            }
+        }
+
         ApplyPoses();
+    }
+
+    static void SetStatFill(Image fill, int value)
+    {
+        const float start = 0.34f;
+        const float full = 0.48f;
+        var rt = fill.rectTransform;
+        var min = rt.anchorMin;
+        var max = rt.anchorMax;
+        min.x = start;
+        max.x = start + full * Mathf.Clamp01(value / 10f);
+        rt.anchorMin = min;
+        rt.anchorMax = max;
+        rt.offsetMin = new Vector2(0f, rt.offsetMin.y);
+        rt.offsetMax = new Vector2(0f, rt.offsetMax.y);
+        fill.type = Image.Type.Simple;
     }
 
     void ApplyPoses()
@@ -195,27 +245,36 @@ public class CharacterSelectPresenter : MonoBehaviour
         for (var i = 0; i < animators.Length; i++)
         {
             var animator = animators[i];
-            if (animator == null)
+            if (animator == null || !animator.gameObject.activeInHierarchy)
                 continue;
 
             PrepareAnimator(i, animator);
-            var chosen = i == selected;
-            Shade(animator.gameObject, !chosen);
-            if (accentLights != null && accentLights[i] != null)
-                accentLights[i].intensity = chosen ? 1.5f : 0.15f;
+            if (i == selected && Application.isPlaying && gestureLengths[i] > 0.05f)
+            {
+                var gestureState = ResolveGestureState(animator);
+                if (!string.IsNullOrEmpty(gestureState))
+                {
+                    animator.speed = 1f;
+                    animator.Play(gestureState, 0, 0f);
+                    animator.Update(0f);
+                    gestureRoutine = StartCoroutine(RestAfterGesture(i, gestureLengths[i]));
+                    continue;
+                }
+            }
 
-            if (chosen && Application.isPlaying && gestureLengths[i] > 0.05f)
-            {
-                animator.speed = 1f;
-                animator.Play("RifleAim", 0, 0f);
-                animator.Update(0f);
-                gestureRoutine = StartCoroutine(RestAfterGesture(i, gestureLengths[i]));
-            }
-            else
-            {
-                HoldRest(animator);
-            }
+            HoldRest(animator);
         }
+    }
+
+    static string ResolveGestureState(Animator animator)
+    {
+        if (HasState(animator, "Attack1"))
+            return "Attack1";
+        if (HasState(animator, "Attack"))
+            return "Attack";
+        if (HasState(animator, "RifleAim"))
+            return "RifleAim";
+        return null;
     }
 
     IEnumerator RestAfterGesture(int index, float seconds)
@@ -230,67 +289,69 @@ public class CharacterSelectPresenter : MonoBehaviour
     static void HoldRest(Animator animator)
     {
         animator.speed = 1f;
-        animator.Play("Idle1", 0, 0.12f);
+        if (HasState(animator, "Idle"))
+            animator.Play("Idle", 0, 0.12f);
+        else if (HasState(animator, "Idle1"))
+            animator.Play("Idle1", 0, 0.12f);
+        else if (HasState(animator, "Idle_A"))
+            animator.Play("Idle_A", 0, 0.12f);
+        else if (HasState(animator, "Blend Tree"))
+            animator.Play("Blend Tree", 0, 0f);
         animator.Update(0f);
-        animator.speed = 0f;
+    }
+
+    static bool HasState(Animator animator, string stateName)
+    {
+        return animator != null && animator.runtimeAnimatorController != null &&
+               animator.HasState(0, Animator.StringToHash(stateName));
     }
 
     void PrepareAnimator(int index, Animator animator)
     {
         animator.applyRootMotion = false;
         animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
-        EnsureGestures();
-        if (gestures[index] != null)
-            gestureLengths[index] = gestures[index].length;
 
-        if (animator.runtimeAnimatorController is AnimatorOverrideController || gestures[index] == null)
-            return;
+        var gesture = ResolveGestureClip(index, animator);
+        if (gesture != null)
+            gestureLengths[index] = gesture.length;
 
         var source = animator.runtimeAnimatorController;
-        if (source == null)
+        if (source == null || source is AnimatorOverrideController || gesture == null)
             return;
 
+        // Solo override si el controlador expone un clip de gesto reemplazable.
         var over = new AnimatorOverrideController(source);
         var list = new List<KeyValuePair<AnimationClip, AnimationClip>>();
         over.GetOverrides(list);
+        var replaced = false;
         for (var i = 0; i < list.Count; i++)
         {
-            if (list[i].Key != null && list[i].Key.name == "RifleAim")
-                list[i] = new KeyValuePair<AnimationClip, AnimationClip>(list[i].Key, gestures[index]);
+            if (list[i].Key == null)
+                continue;
+            var key = list[i].Key.name;
+            if (key != "RifleAim" && key != "Attack" && key != "Attack1" &&
+                key != "KayKit_Knight_Combo1" && key != "KayKit_Mage_Combo1" && key != "KayKit_Rogue_Combo1")
+                continue;
+            list[i] = new KeyValuePair<AnimationClip, AnimationClip>(list[i].Key, gesture);
+            replaced = true;
         }
+
+        if (!replaced)
+            return;
 
         over.ApplyOverrides(list);
         animator.runtimeAnimatorController = over;
     }
 
-    static void Shade(GameObject hero, bool shadowed)
+    static AnimationClip ResolveGestureClip(int index, Animator animator)
     {
-        foreach (var renderer in hero.GetComponentsInChildren<Renderer>(true))
-        {
-            if (!shadowed)
-            {
-                renderer.SetPropertyBlock(null);
-                continue;
-            }
+        var table = animator != null && animator.isHuman ? HumanoidGestureClips : KayKitGestureClips;
+        if (table == null || table.Length == 0)
+            return null;
 
-            var block = new MaterialPropertyBlock();
-            block.SetColor("_BaseColor", new Color(0.62f, 0.64f, 0.68f, 1f));
-            block.SetColor("_EmissionColor", Color.black);
-            renderer.SetPropertyBlock(block);
-        }
-    }
-
-    static void EnsureGestures()
-    {
-        if (gestures != null)
-            return;
-
-        gestures = new AnimationClip[GestureClips.Length];
-        for (var i = 0; i < GestureClips.Length; i++)
-        {
-            var split = GestureClips[i].Split('|');
-            gestures[i] = LoadClip(split[0], split[1]);
-        }
+        var entry = table[Mathf.Clamp(index, 0, table.Length - 1)];
+        var split = entry.Split('|');
+        return LoadClip(split[0], split[1]);
     }
 
     static AnimationClip LoadClip(string path, string clipName)
@@ -306,36 +367,6 @@ public class CharacterSelectPresenter : MonoBehaviour
         return null;
     }
 
-    void FollowNames()
-    {
-        var camera = Camera.main;
-        if (camera == null || canvasRect == null || pivots == null || nameRoots == null)
-            return;
-
-        for (var i = 0; i < pivots.Length; i++)
-        {
-            if (pivots[i] == null || nameRoots[i] == null)
-                continue;
-
-            var world = new Vector3(pivots[i].position.x, HeadTop(pivots[i]), pivots[i].position.z);
-            var screen = camera.WorldToScreenPoint(world);
-            if (screen.z < 0f)
-                continue;
-
-            if (RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screen, null, out var local))
-                nameRoots[i].anchoredPosition = local + new Vector2(86f, 18f);
-
-            if (meterRoots == null || meterRoots[i] == null)
-                continue;
-
-            var feet = camera.WorldToScreenPoint(new Vector3(pivots[i].position.x, 0.08f, pivots[i].position.z));
-            if (feet.z < 0f)
-                continue;
-            if (RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, feet, null, out var feetLocal))
-                meterRoots[i].anchoredPosition = feetLocal;
-        }
-    }
-
     void Rebind()
     {
         var lineup = transform.Find("Lineup");
@@ -346,107 +377,99 @@ public class CharacterSelectPresenter : MonoBehaviour
             return;
         }
 
-        canvasRect = ui.GetComponent<RectTransform>();
+        heroStage = lineup.Find("HeroStage");
+        stageLight = lineup.Find("StageLight")?.GetComponent<Light>();
+
         pivots = new Transform[HeroRoster.All.Length];
         pivotBase = new Quaternion[HeroRoster.All.Length];
-        accentLights = new Light[HeroRoster.All.Length];
-        rings = new Renderer[HeroRoster.All.Length];
         animators = new Animator[HeroRoster.All.Length];
         gestureLengths = new float[HeroRoster.All.Length];
-        nameRoots = new RectTransform[HeroRoster.All.Length];
-        nameLabels = new Text[HeroRoster.All.Length];
-        titleLabels = new Text[HeroRoster.All.Length];
-        indexLabels = new Text[HeroRoster.All.Length];
-        indexBars = new Image[HeroRoster.All.Length];
-        meterRoots = new RectTransform[HeroRoster.All.Length];
-        meterFills = new Image[HeroRoster.All.Length];
-        meterRoles = new Text[HeroRoster.All.Length];
 
         for (var i = 0; i < HeroRoster.All.Length; i++)
         {
             var profile = HeroRoster.All[i];
-            var slot = lineup.Find("Slot_" + profile.Name);
-            if (slot != null)
-            {
-                pivots[i] = slot;
-                pivotBase[i] = slot.localRotation;
-                var accent = slot.Find("Accent_" + profile.Name);
-                if (accent != null)
-                    accentLights[i] = accent.GetComponent<Light>();
-                var ring = slot.Find("Ring");
-                if (ring != null)
-                    rings[i] = ring.GetComponent<Renderer>();
-                var hero = slot.Find(profile.Name);
-                if (hero != null)
-                    animators[i] = hero.GetComponentInChildren<Animator>();
-            }
+            Transform slot = null;
+            if (heroStage != null)
+                slot = heroStage.Find("Slot_" + profile.Name);
+            if (slot == null)
+                slot = lineup.Find("Slot_" + profile.Name);
 
-            var plate = ui.Find("Name_" + profile.Name);
-            if (plate != null)
-            {
-                nameRoots[i] = plate.GetComponent<RectTransform>();
-                var name = plate.Find("Name");
-                if (name != null)
-                    nameLabels[i] = name.GetComponent<Text>();
-                var title = plate.Find("Title");
-                if (title != null)
-                    titleLabels[i] = title.GetComponent<Text>();
-            }
+            if (slot == null)
+                continue;
 
-            var hit = ui.Find("Hit_" + profile.Name);
-            if (hit != null)
-            {
-                var button = hit.GetComponent<Button>();
-                if (button != null)
-                {
-                    var captured = i;
-                    button.onClick.RemoveAllListeners();
-                    button.onClick.AddListener(() => Select(captured));
-                }
-            }
+            pivots[i] = slot;
+            pivotBase[i] = slot.localRotation;
+            var hero = slot.Find(profile.Name);
+            if (hero != null)
+                animators[i] = hero.GetComponentInChildren<Animator>();
+        }
 
-            var meter = ui.Find("Meter_" + profile.Name);
-            if (meter != null)
-            {
-                meterRoots[i] = meter.GetComponent<RectTransform>();
-                var fill = meter.Find("Track/Fill");
-                if (fill != null)
-                    meterFills[i] = fill.GetComponent<Image>();
-                meterRoles[i] = FindText(meter, "Role");
-            }
+        cardRoots = new RectTransform[HeroRoster.All.Length];
+        cardBorders = new Image[HeroRoster.All.Length];
+        cardPortraits = new Image[HeroRoster.All.Length];
+        cardNames = new Text[HeroRoster.All.Length];
+        cardTitles = new Text[HeroRoster.All.Length];
+        cardStars = new Image[HeroRoster.All.Length];
 
-            var index = ui.Find("Index_" + i);
-            if (index != null)
+        var roster = ui.Find("Roster");
+        for (var i = 0; i < HeroRoster.All.Length; i++)
+        {
+            var profile = HeroRoster.All[i];
+            var card = roster != null ? roster.Find("Card_" + profile.Name) : ui.Find("Card_" + profile.Name);
+            if (card == null)
+                continue;
+
+            cardRoots[i] = card.GetComponent<RectTransform>();
+            cardBorders[i] = card.GetComponent<Image>();
+            cardPortraits[i] = FindImage(card, "Portrait");
+            cardNames[i] = FindText(card, "Name");
+            cardTitles[i] = FindText(card, "Title");
+            cardStars[i] = FindImage(card, "Star");
+
+            var button = card.GetComponent<Button>();
+            if (button != null)
             {
-                indexLabels[i] = index.GetComponentInChildren<Text>();
-                indexBars[i] = index.GetComponent<Image>();
-                var button = index.GetComponent<Button>();
-                if (button != null)
-                {
-                    var captured = i;
-                    button.onClick.RemoveAllListeners();
-                    button.onClick.AddListener(() => Select(captured));
-                }
+                var captured = i;
+                button.onClick.RemoveAllListeners();
+                button.onClick.AddListener(() => Select(captured));
             }
         }
 
-        statName = FindText(ui, "HeaderName");
-        statClass = FindText(ui, "HeaderClass");
-        var panel = ui.Find("StatsPanel");
-        if (panel != null)
+        var detail = ui.Find("DetailPanel");
+        if (detail != null)
         {
-            statSummary = FindText(panel, "HeroSummary");
-            statAbility = FindText(panel, "Ability");
-            var mark = panel.Find("Mark");
-            if (mark != null)
-                statsRule = mark.GetComponent<Image>();
+            headerName = FindText(detail, "HeaderName");
+            headerClass = FindText(detail, "HeaderClass");
+            description = FindText(detail, "Description");
+
+            statFills = new Image[StatNames.Length];
+            statValues = new Text[StatNames.Length];
+            for (var i = 0; i < StatNames.Length; i++)
+            {
+                var row = detail.Find("Stat_" + StatNames[i]);
+                if (row == null)
+                    continue;
+                statFills[i] = FindImage(row, "Fill");
+                statValues[i] = FindText(row, "Value");
+            }
+
+            abilityIcons = new Image[4];
+            for (var i = 0; i < abilityIcons.Length; i++)
+                abilityIcons[i] = FindImage(detail, "Ability_" + i);
+        }
+        else
+        {
+            headerName = FindText(ui, "HeaderName");
+            headerClass = FindText(ui, "HeaderClass");
         }
 
         Hook(ui.Find("Back"), BackToMenu);
-        Hook(ui.Find("Home"), BackToMenu);
+        Hook(ui.Find("Prev"), () => Select(selected - 1));
+        Hook(ui.Find("Next"), () => Select(selected + 1));
         Hook(ui.Find("Enter"), EnterDungeon);
+        AbilityHint.EnsureTooltip(ui);
+
         Select((int)GameSession.SelectedHero);
-        FollowNames();
     }
 
     static void Hook(Transform target, UnityEngine.Events.UnityAction action)
@@ -466,11 +489,20 @@ public class CharacterSelectPresenter : MonoBehaviour
         return child != null ? child.GetComponent<Text>() : null;
     }
 
+    static Image FindImage(Transform parent, string name)
+    {
+        var child = parent.Find(name);
+        return child != null ? child.GetComponent<Image>() : null;
+    }
+
     void EnterDungeon()
     {
         if (!Application.isPlaying)
             return;
-        SceneManager.LoadScene("ForestLevel");
+        PlayerPrefs.SetInt("SelectedCharacter", (int)GameSession.SelectedHero);
+        PlayerPrefs.Save();
+        PersistentMenuMusic.StopAndDestroy();
+        SceneManager.LoadScene("Level1");
     }
 
     void BackToMenu()
@@ -479,16 +511,72 @@ public class CharacterSelectPresenter : MonoBehaviour
             return;
         SceneManager.LoadScene("MainMenu");
     }
+}
 
-    static float HeadTop(Transform slot)
+public class AbilityHint : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+{
+    public string Text;
+
+    static GameObject root;
+    static Text label;
+
+    public static void EnsureTooltip(Transform ui)
     {
-        var skins = slot.GetComponentsInChildren<SkinnedMeshRenderer>();
-        if (skins.Length == 0)
-            return slot.position.y + 1.85f;
+        if (ui == null)
+            return;
 
-        var bounds = skins[0].bounds;
-        for (var i = 1; i < skins.Length; i++)
-            bounds.Encapsulate(skins[i].bounds);
-        return bounds.max.y + 0.16f;
+        var existing = ui.Find("AbilityTooltip");
+        if (existing == null)
+        {
+            var go = new GameObject("AbilityTooltip", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+            go.transform.SetParent(ui, false);
+            var image = go.GetComponent<Image>();
+            image.color = new Color(0.08f, 0.07f, 0.05f, 0.94f);
+            image.raycastTarget = false;
+            var rt = go.GetComponent<RectTransform>();
+            rt.pivot = new Vector2(0.5f, 0f);
+            rt.sizeDelta = new Vector2(280f, 42f);
+
+            var textGo = new GameObject("Label", typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
+            textGo.transform.SetParent(go.transform, false);
+            var text = textGo.GetComponent<Text>();
+            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            text.fontSize = 16;
+            text.alignment = TextAnchor.MiddleCenter;
+            text.color = new Color(0.96f, 0.9f, 0.72f);
+            text.horizontalOverflow = HorizontalWrapMode.Wrap;
+            text.verticalOverflow = VerticalWrapMode.Overflow;
+            text.raycastTarget = false;
+            var textRt = textGo.GetComponent<RectTransform>();
+            textRt.anchorMin = Vector2.zero;
+            textRt.anchorMax = Vector2.one;
+            textRt.offsetMin = new Vector2(10f, 4f);
+            textRt.offsetMax = new Vector2(-10f, -4f);
+            existing = go.transform;
+        }
+
+        root = existing.gameObject;
+        label = root.GetComponentInChildren<Text>(true);
+        root.SetActive(false);
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (root == null || label == null || string.IsNullOrEmpty(Text))
+            return;
+
+        label.text = Text;
+        var tip = root.GetComponent<RectTransform>();
+        var icon = (RectTransform)transform;
+        var lift = icon.rect.height * icon.lossyScale.y * 0.7f + 14f;
+        tip.position = icon.position + Vector3.up * lift;
+        root.transform.SetAsLastSibling();
+        root.SetActive(true);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if (root != null)
+            root.SetActive(false);
     }
 }

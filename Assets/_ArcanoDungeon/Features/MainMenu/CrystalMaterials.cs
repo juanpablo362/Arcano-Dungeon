@@ -46,10 +46,10 @@ public static class CrystalMaterials
 
         gold = Create(
             "CrystalGold",
-            new Color(0.86f, 0.62f, 0.18f),
-            new Color(0.25f, 0.1f, 0.02f),
-            0.82f,
-            1f);
+            new Color(0.62f, 0.44f, 0.14f),
+            new Color(0.08f, 0.03f, 0.01f),
+            0.35f,
+            0.55f);
     }
 
     static Material Create(string name, Color baseColor, Color emission, float smoothness, float metallic)

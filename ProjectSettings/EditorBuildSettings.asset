@@ -18,6 +18,9 @@ EditorBuildSettings:
     path: Assets/_ArcanoDungeon/Scenes/CharacterSelection.unity
     guid: abdd35a1ac62444a951f188af35ba129
   - enabled: 1
+    path: Assets/_ArcanoDungeon/Scenes/Level1.unity
+    guid: 6d69c213905922e4c9d028e8241bf36a
+  - enabled: 1
     path: Assets/_ArcanoDungeon/Scenes/ForestLevel.unity
     guid: f8f92c22d28c42ed83fdbe9aacdcbe6d
   - enabled: 1

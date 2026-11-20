@@ -7,9 +7,9 @@ public class MenuAmbientLighting : MonoBehaviour
 
     public float breathPeriod = 4f;
     public float flickerSpeed = 0.7f;
-    public float lightMin = 10f;
-    public float lightMax = 14f;
-    public float lightRange = 6.8f;
+    public float lightMin = 6.5f;
+    public float lightMax = 9f;
+    public float lightRange = 6.2f;
     public Color backdropTint = new Color(0.55f, 0.55f, 0.7f, 1f);
     public float backdropMin = 0.55f;
     public float backdropMax = 1.15f;
@@ -64,6 +64,9 @@ public class MenuAmbientLighting : MonoBehaviour
 
         if (backdropRenderer != null)
         {
+            if (block == null)
+                block = new MaterialPropertyBlock();
+
             float tintStrength = Mathf.Lerp(backdropMin, backdropMax, pulse);
             Color color = backdropTint * tintStrength;
             color.a = 1f;

@@ -23,7 +23,7 @@ static class ApplyCrystalMaterials
         // Repara shaders rotos recreando desde el material por defecto URP.
         Repair(body, new Color(0.25f, 0.06f, 0.52f), new Color(0.55f, 0.12f, 1.1f), 0.92f, 0.05f, false);
         Repair(glow, new Color(0.62f, 0.22f, 1f), new Color(1.4f, 0.35f, 2.2f), 0.7f, 0f, false);
-        Repair(gold, new Color(0.86f, 0.62f, 0.18f), new Color(0.25f, 0.1f, 0.02f), 0.82f, 1f, true);
+        Repair(gold, new Color(0.62f, 0.44f, 0.14f), new Color(0.08f, 0.03f, 0.01f), 0.35f, 0.55f, true);
 
         var crystalPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(CrystalPath);
         if (crystalPrefab == null)
@@ -84,7 +84,11 @@ static class ApplyCrystalMaterials
             {
                 material.EnableKeyword("_NORMALMAP");
                 material.SetTexture("_BumpMap", normal);
-                material.SetFloat("_BumpScale", 1.2f);
+                material.SetFloat("_BumpScale", 0.7f);
+                material.SetFloat("_SpecularHighlights", 0f);
+                material.SetFloat("_EnvironmentReflections", 0f);
+                material.EnableKeyword("_SPECULARHIGHLIGHTS_OFF");
+                material.EnableKeyword("_ENVIRONMENTREFLECTIONS_OFF");
             }
         }
 

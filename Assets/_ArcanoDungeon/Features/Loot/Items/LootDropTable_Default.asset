@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9a4a78565f99b04fac7ce33ea8ed6c5, type: 3}
+  m_Name: LootDropTable_Default
+  m_EditorClassIdentifier: Assembly-CSharp::ArcanoDungeon.Features.Loot.LootDropTable
+  entries:
+  - item: {fileID: 11400000, guid: f98f8ec787877874a8d3282f36a6de5a, type: 2}
+    weightOverride: 10
+  - item: {fileID: 11400000, guid: 3af31e128b59cc848906e91dfe1531ed, type: 2}
+    weightOverride: 10
+  - item: {fileID: 11400000, guid: 09aa7db5b7f8a874992ea546a20a2a25, type: 2}
+    weightOverride: 12
+  - item: {fileID: 11400000, guid: ff3eca5825e409341b8cfe4c668a46ce, type: 2}
+    weightOverride: 10
+  - item: {fileID: 11400000, guid: 92e08496cce14354ea7817d508fb4ac5, type: 2}
+    weightOverride: 9
+  - item: {fileID: 11400000, guid: 1eb3e1dac35f38d44bb281b1bb90ad40, type: 2}
+    weightOverride: 9
+  - item: {fileID: 11400000, guid: f494c0b3a0cc5cc499b48fe3ef9f9be0, type: 2}
+    weightOverride: 8
+  - item: {fileID: 11400000, guid: 31e09ba0ebbbcd94ea25d89a1b8ee4a1, type: 2}
+    weightOverride: 18
+  - item: {fileID: 11400000, guid: a6f0040da8676f942b22cba380176e11, type: 2}
+    weightOverride: 12
+  - item: {fileID: 11400000, guid: 56776226c7d245b498fda958c2be4e52, type: 2}
+    weightOverride: 8
+  - item: {fileID: 11400000, guid: a8596124c40b4f347861b8390c91fd8f, type: 2}
+    weightOverride: 5
+  - item: {fileID: 11400000, guid: 8333e490926b70f4383e2c786e6dd543, type: 2}
+    weightOverride: 5
+  - item: {fileID: 11400000, guid: 36a6f0372c76d524cb60ce8156772bcf, type: 2}
+    weightOverride: 5
+  - item: {fileID: 11400000, guid: a8e681a2411053c4e8d0b5db98ad9068, type: 2}
+    weightOverride: 5
+  - item: {fileID: 11400000, guid: cdac26f42f3fbdc48badd73e9e5e0ad5, type: 2}
+    weightOverride: 4

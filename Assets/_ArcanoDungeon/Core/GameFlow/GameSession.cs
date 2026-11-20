@@ -1,4 +1,4 @@
 public static class GameSession
 {
-    public static HeroId SelectedHero = HeroId.Elara;
+    public static HeroId SelectedHero = HeroId.Mage;
 }

@@ -1,0 +1,70 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa58edda8a81aec408a3dc219018e6c5, type: 3}
+  m_Name: Item_PowderBomb
+  m_EditorClassIdentifier: Assembly-CSharp::ArcanoDungeon.Features.Loot.ItemData
+  id: powder_bomb
+  displayName: "Bomba de P\xF3lvora"
+  description: +1 carga de bomba (Q).
+  type: 2
+  icon: {fileID: 0}
+  worldPrefab: {fileID: 0}
+  dropWeight: 8
+  temporarySeconds: 40
+  weaponProfile: 0
+  weaponDamageBonus: 10
+  weaponReachBonus: 0
+  weaponFireCooldown: 0.18
+  weaponProjectileCount: 3
+  weaponSlowPercent: 0.5
+  weaponSlowSeconds: 3
+  weaponQuakeRadius: 3.2
+  weaponQuakeDamage: 35
+  weaponSummonCount: 2
+  weaponSummonSeconds: 10
+  moveSpeedMult: 1
+  dashCooldownReduce: 0
+  maxShieldBonus: 0
+  shieldRegenDelayReduce: 0
+  damageBonus: 0
+  reachBonus: 0
+  meleeArcAngleMult: 1
+  maxHealthBonus: 0
+  maxStaminaBonus: 0
+  healAmount: 0
+  refillShield: 0
+  speedBurstMult: 1
+  speedBurstSeconds: 0
+  scoreAmount: 0
+  bombCharges: 1
+  hasOrbital: 0
+  hasChainLightning: 0
+  hasHolyAura: 0
+  hasVampiric: 0
+  hasMultishot: 0
+  hasCrystalHeart: 0
+  orbitalRadius: 1.6
+  orbitalSpeed: 220
+  orbitalContactDamage: 12
+  orbitalTickSeconds: 0.35
+  chainEveryHits: 4
+  chainMaxJumps: 2
+  chainRadius: 4.5
+  chainDamage: 22
+  holyAuraRadius: 3
+  holyAuraTickSeconds: 0.5
+  holyAuraDamage: 8
+  vampiricChance: 0.15
+  vampiricHeal: 5
+  vampiricShield: 10
+  multishotArcAngle: 1.25
+  multishotSpread: 16
