@@ -23,6 +23,9 @@ public class LevelExit : MonoBehaviour
 
         if (other.CompareTag("Player") || (other.transform.root != null && other.transform.root.CompareTag("Player")))
         {
+            var health = other.GetComponentInParent<PlayerHealth>();
+            if (!GameSession.PrepareLevelTransition(health != null ? health.gameObject : other.transform.root.gameObject))
+                return;
             isLoading = true;
             var clip = DungeonSfxCatalog.Instance != null ? DungeonSfxCatalog.Instance.portalEnter : null;
             GameSfx.Play2D(clip, 0.8f);

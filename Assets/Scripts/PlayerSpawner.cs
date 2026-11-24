@@ -1,3 +1,4 @@
+using System.Collections;
 using ArcanoDungeon.Features.Loot;
 using UnityEngine;
 
@@ -9,10 +10,8 @@ public class PlayerSpawner : MonoBehaviour
     public GameObject yukoPrefab;
     public Transform startPosition;
 
-    void Start()
+    IEnumerator Start()
     {
-        RunScore.Reset();
-
         var prefabToSpawn = ResolvePrefab();
 
         if (prefabToSpawn != null)
@@ -34,6 +33,9 @@ public class PlayerSpawner : MonoBehaviour
                 player.AddComponent<PowderBombController>();
             if (player.GetComponent<PlayerLootBuffs>() == null)
                 player.AddComponent<PlayerLootBuffs>();
+
+            yield return null;
+            GameSession.RestoreLevelTransition(player);
         }
         else
         {

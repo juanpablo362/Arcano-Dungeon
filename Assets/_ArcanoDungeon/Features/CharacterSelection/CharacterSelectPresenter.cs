@@ -356,15 +356,7 @@ public class CharacterSelectPresenter : MonoBehaviour
 
     static AnimationClip LoadClip(string path, string clipName)
     {
-#if UNITY_EDITOR
-        var assets = UnityEditor.AssetDatabase.LoadAllAssetsAtPath(path);
-        foreach (var asset in assets)
-        {
-            if (asset is AnimationClip clip && clip.name == clipName)
-                return clip;
-        }
-#endif
-        return null;
+        return ArcanoDungeon.Infrastructure.Assets.DungeonRuntimeAssets.Load<AnimationClip>(path + "|" + clipName);
     }
 
     void Rebind()
@@ -502,6 +494,7 @@ public class CharacterSelectPresenter : MonoBehaviour
         PlayerPrefs.SetInt("SelectedCharacter", (int)GameSession.SelectedHero);
         PlayerPrefs.Save();
         PersistentMenuMusic.StopAndDestroy();
+        GameSession.ResetRun();
         SceneManager.LoadScene("Level1");
     }
 

@@ -117,6 +117,13 @@ namespace ArcanoDungeon.Features.Loot
             return $"Arma: {item.displayName} ({Mathf.RoundToInt(durationTotal)}s)";
         }
 
+        public void RestoreWeapon(ItemData item, float remaining, float total)
+        {
+            Equip(item);
+            durationTotal = Mathf.Max(remaining, total);
+            endsAt = Time.time + Mathf.Max(0f, remaining);
+        }
+
         static float ResolveDuration(ItemData item)
         {
             float configured = item != null ? item.temporarySeconds : 10f;

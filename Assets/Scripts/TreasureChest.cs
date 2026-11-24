@@ -169,21 +169,13 @@ public class TreasureChest : MonoBehaviour
 
     static GameObject LoadDefaultMimicPrefab()
     {
-#if UNITY_EDITOR
-        return UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(
-            "Assets/_ArcanoDungeon/Prefabs/Monsters/EnemyOrc.prefab");
-#else
-        return null;
-#endif
+        var catalog = ArcanoDungeon.Infrastructure.Assets.DungeonRuntimeAssets.Instance;
+        return catalog != null ? catalog.mimicPrefab : null;
     }
 
     static LootDropTable LoadDefaultDropTable()
     {
-#if UNITY_EDITOR
-        return UnityEditor.AssetDatabase.LoadAssetAtPath<LootDropTable>(
-            "Assets/_ArcanoDungeon/Features/Loot/Items/LootDropTable_Default.asset");
-#else
-        return null;
-#endif
+        var catalog = ArcanoDungeon.Infrastructure.Assets.DungeonRuntimeAssets.Instance;
+        return catalog != null ? catalog.defaultDropTable : null;
     }
 }

@@ -1,3 +1,4 @@
+using ArcanoDungeon.Infrastructure.Assets;
 using UnityEngine;
 
 namespace ArcanoDungeon.Features.Loot
@@ -120,11 +121,7 @@ namespace ArcanoDungeon.Features.Loot
 
         static GameObject LoadPrefab(string assetPath)
         {
-#if UNITY_EDITOR
-            return UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-#else
-            return null;
-#endif
+            return DungeonRuntimeAssets.Load<GameObject>(assetPath);
         }
 
         static GameObject CreateFallbackOrbFromItem(ItemData item, Vector3 position)

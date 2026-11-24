@@ -49,6 +49,8 @@ namespace ArcanoDungeon.Features.Loot
             charges = Mathf.Min(maxCharges, charges + amount);
         }
 
+        public void RestoreCharges(int value) => charges = Mathf.Clamp(value, 0, maxCharges);
+
         void SpawnBomb(Vector3 pos)
         {
             var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
