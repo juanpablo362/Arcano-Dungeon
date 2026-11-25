@@ -8,6 +8,7 @@ public class PlayerSpawner : MonoBehaviour
     public GameObject knightPrefab;
     public GameObject misakiPrefab;
     public GameObject yukoPrefab;
+    public GameObject assassinPrefab;
     public Transform startPosition;
 
     IEnumerator Start()
@@ -53,6 +54,8 @@ public class PlayerSpawner : MonoBehaviour
                 return misakiPrefab != null ? misakiPrefab : knightPrefab != null ? knightPrefab : magePrefab;
             case HeroId.Yuko:
                 return yukoPrefab != null ? yukoPrefab : knightPrefab != null ? knightPrefab : magePrefab;
+            case HeroId.Assassin:
+                return assassinPrefab != null ? assassinPrefab : Resources.Load<GameObject>("Characters/AssassinPlayer");
             case HeroId.Mage:
             default:
                 return magePrefab != null ? magePrefab : knightPrefab;

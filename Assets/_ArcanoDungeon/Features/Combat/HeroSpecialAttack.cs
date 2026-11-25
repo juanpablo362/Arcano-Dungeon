@@ -131,6 +131,7 @@ namespace ArcanoDungeon.Features.Combat
                     CastKnightShockwave();
                     break;
                 case HeroId.Misaki:
+                case HeroId.Assassin:
                     StartCoroutine(CastMisakiFlurry(aim));
                     break;
                 case HeroId.Yuko:

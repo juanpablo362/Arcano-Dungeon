@@ -11,6 +11,7 @@ namespace ArcanoDungeon.Features.Player.View
     {
         [SerializeField] string cameraTargetName = "CameraTarget";
         [SerializeField] Vector3 cameraTargetLocalPosition = new Vector3(0f, 0.95f, 0f);
+        [SerializeField] float followHeightOverride;
 
         bool bound;
 
@@ -31,6 +32,7 @@ namespace ArcanoDungeon.Features.Player.View
             if (follow != null && (rig == null || !rig.isActiveAndEnabled))
             {
                 EnsureCameraFollowIsMain(follow);
+                if (followHeightOverride > 0f) follow.heightOffset = followHeightOverride;
                 bound = true;
                 return;
             }

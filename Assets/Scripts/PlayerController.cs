@@ -2,6 +2,7 @@ using ArcanoDungeon.Features.Combat;
 using ArcanoDungeon.Features.Player.View;
 using ArcanoDungeon.Features.Player.Motor;
 using ArcanoDungeon.Infrastructure.Input;
+using ArcanoDungeon.Features.Assassin;
 using UnityEngine;
 
 #pragma warning disable CS0618
@@ -31,8 +32,9 @@ public class PlayerController : CharacterBase
 
     public bool isBlocking { get; private set; }
 
-    /// <summary>True mientras la maga canaliza/dispara (penaliza movimiento y bloquea dash).</summary>
-    public bool IsChannelingRanged => Time.time < rangedChannelUntil;
+    /// <summary>True mientras se realiza un ataque a distancia.</summary>
+    public bool IsChannelingRanged => Time.time < rangedChannelUntil || (assassin != null && assassin.IsThrowing);
+    AssassinAbilities assassin;
 
     bool hasBlockingParam;
     float nextFireballTime;
@@ -42,6 +44,7 @@ public class PlayerController : CharacterBase
     protected override void Awake()
     {
         base.Awake();
+        assassin = GetComponent<AssassinAbilities>();
 
         if (inputReader == null)
             inputReader = GetComponent<PlayerInputReader>();
@@ -110,7 +113,7 @@ public class PlayerController : CharacterBase
             : (UnityEngine.InputSystem.Mouse.current != null
                && UnityEngine.InputSystem.Mouse.current.rightButton.isPressed);
 
-        if (useFireballOnRightClick)
+        if (useFireballOnRightClick || (assassin != null && assassin.isActiveAndEnabled))
         {
             isBlocking = false;
         }
@@ -127,6 +130,7 @@ public class PlayerController : CharacterBase
 
     void HandleAttack()
     {
+        if (assassin != null && assassin.IsThrowing) return;
         if (!CameraFollow.IsCursorLocked)
             return;
 
@@ -160,7 +164,11 @@ public class PlayerController : CharacterBase
         bool rightPressed = mouse != null && mouse.rightButton.isPressed;
         bool rightClicked = mouse != null && mouse.rightButton.wasPressedThisFrame;
 
-        if (useFireballOnRightClick)
+        if (assassin != null && assassin.isActiveAndEnabled)
+        {
+            isBlocking = false;
+        }
+        else if (useFireballOnRightClick)
         {
             isBlocking = false;
             if (rightClicked)

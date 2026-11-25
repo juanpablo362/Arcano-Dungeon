@@ -99,6 +99,10 @@ public class CharacterSelectPresenter : MonoBehaviour
                 Select(1);
             if (keyboard.digit3Key.wasPressedThisFrame)
                 Select(2);
+            if (keyboard.digit4Key.wasPressedThisFrame)
+                Select(3);
+            if (keyboard.digit5Key.wasPressedThisFrame)
+                Select(4);
             if (keyboard.aKey.wasPressedThisFrame || keyboard.leftArrowKey.wasPressedThisFrame)
                 Select(selected - 1);
             if (keyboard.dKey.wasPressedThisFrame || keyboard.rightArrowKey.wasPressedThisFrame)
@@ -309,6 +313,7 @@ public class CharacterSelectPresenter : MonoBehaviour
     void PrepareAnimator(int index, Animator animator)
     {
         animator.applyRootMotion = false;
+        animator.fireEvents = false;
         animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
 
         var gesture = ResolveGestureClip(index, animator);
@@ -393,7 +398,11 @@ public class CharacterSelectPresenter : MonoBehaviour
             pivotBase[i] = slot.localRotation;
             var hero = slot.Find(profile.Name);
             if (hero != null)
+            {
+                if (profile.Id == HeroId.Assassin)
+                    hero.localScale = Vector3.one * profile.StageScale;
                 animators[i] = hero.GetComponentInChildren<Animator>();
+            }
         }
 
         cardRoots = new RectTransform[HeroRoster.All.Length];

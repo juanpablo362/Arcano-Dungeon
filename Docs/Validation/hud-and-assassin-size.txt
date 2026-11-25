@@ -1,0 +1,83 @@
+
+BARRAS — Level1
+PASS One shared vitals panel
+PASS One active Health bar; legacy copies are hidden
+PASS One active Shield bar; legacy copies are hidden
+PASS One active Stamina bar; legacy copies are hidden
+PASS Consistent screen scaling
+PASS Shared bar dimensions and alignment: PlayerHealthBar
+PASS Shared color: PlayerHealthBar
+PASS Shared bar dimensions and alignment: PlayerShieldBar
+PASS Shared color: PlayerShieldBar
+PASS Shared bar dimensions and alignment: PlayerStaminaBar
+PASS Shared color: PlayerStaminaBar
+PASS Health fill and maximum match gameplay data
+PASS Shield fill matches gameplay data
+PASS Stamina fill matches gameplay data
+PASS Damage updates health and shield
+PASS Bars respond to damage and stamina use
+TAMAÑO DE LA ASESINA — Level1
+PASS Assassin visual scale increased by 15 percent
+PASS Collider matches the larger model and keeps the feet aligned
+PASS Crouch capsule scales proportionally
+PASS Camera targets the larger assassin at the proper height
+PASS Humanoid animation and poison/shadow abilities remain connected
+PASS The larger head stays inside the camera frame
+PASS Transition snapshot prepared
+
+BARRAS — CatacombsLevel
+PASS One shared vitals panel
+PASS One active Health bar; legacy copies are hidden
+PASS One active Shield bar; legacy copies are hidden
+PASS One active Stamina bar; legacy copies are hidden
+PASS Consistent screen scaling
+PASS Shared bar dimensions and alignment: PlayerHealthBar
+PASS Shared color: PlayerHealthBar
+PASS Shared bar dimensions and alignment: PlayerShieldBar
+PASS Shared color: PlayerShieldBar
+PASS Shared bar dimensions and alignment: PlayerStaminaBar
+PASS Shared color: PlayerStaminaBar
+PASS Health survives the level transition
+PASS Shield survives the level transition
+PASS Stamina survives the level transition
+PASS Health fill and maximum match gameplay data
+PASS Shield fill matches gameplay data
+PASS Stamina fill matches gameplay data
+PASS Damage updates health and shield
+PASS Bars respond to damage and stamina use
+TAMAÑO DE LA ASESINA — CatacombsLevel
+PASS Assassin visual scale increased by 15 percent
+PASS Collider matches the larger model and keeps the feet aligned
+PASS Crouch capsule scales proportionally
+PASS Camera targets the larger assassin at the proper height
+PASS Humanoid animation and poison/shadow abilities remain connected
+PASS The larger head stays inside the camera frame
+PASS Transition snapshot prepared
+
+BARRAS — CastleLevel
+PASS One shared vitals panel
+PASS One active Health bar; legacy copies are hidden
+PASS One active Shield bar; legacy copies are hidden
+PASS One active Stamina bar; legacy copies are hidden
+PASS Consistent screen scaling
+PASS Shared bar dimensions and alignment: PlayerHealthBar
+PASS Shared color: PlayerHealthBar
+PASS Shared bar dimensions and alignment: PlayerShieldBar
+PASS Shared color: PlayerShieldBar
+PASS Shared bar dimensions and alignment: PlayerStaminaBar
+PASS Shared color: PlayerStaminaBar
+PASS Health survives the level transition
+PASS Shield survives the level transition
+PASS Stamina survives the level transition
+PASS Health fill and maximum match gameplay data
+PASS Shield fill matches gameplay data
+PASS Stamina fill matches gameplay data
+PASS Damage updates health and shield
+PASS Bars respond to damage and stamina use
+TAMAÑO DE LA ASESINA — CastleLevel
+PASS Assassin visual scale increased by 15 percent
+PASS Collider matches the larger model and keeps the feet aligned
+PASS Crouch capsule scales proportionally
+PASS Camera targets the larger assassin at the proper height
+PASS Humanoid animation and poison/shadow abilities remain connected
+PASS The larger head stays inside the camera frame
