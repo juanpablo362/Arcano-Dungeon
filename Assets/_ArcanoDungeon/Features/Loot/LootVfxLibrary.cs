@@ -1,3 +1,4 @@
+using ArcanoDungeon.Infrastructure.Assets;
 using UnityEngine;
 
 namespace ArcanoDungeon.Features.Loot
@@ -48,11 +49,7 @@ namespace ArcanoDungeon.Features.Loot
         {
             if (string.IsNullOrEmpty(assetPath))
                 return null;
-#if UNITY_EDITOR
-            return UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-#else
-            return null;
-#endif
+            return DungeonRuntimeAssets.Load<GameObject>(assetPath);
         }
 
         public static GameObject Spawn(

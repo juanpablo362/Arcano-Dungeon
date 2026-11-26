@@ -88,7 +88,16 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         PlayHurtFlash();
 
         if (currentHealth <= 0)
+        {
+            GameSession.ResetRun();
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+    }
+
+    public void RestoreCurrentHealth(int value)
+    {
+        currentHealth = Mathf.Clamp(value, 1, maxHealth);
+        UpdateHealthUI();
     }
 
     public void Heal(int amount)

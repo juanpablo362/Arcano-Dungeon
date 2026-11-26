@@ -1,0 +1,108 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b59e153492dc32f4a897dbe18453073c, type: 3}
+  m_Name: DungeonRuntimeAssets
+  m_EditorClassIdentifier: Assembly-CSharp::ArcanoDungeon.Infrastructure.Assets.DungeonRuntimeAssets
+  entries:
+  - key: Assets/100BestEffectPack/Effects/ExplosionEffect/ExplosionEffect.prefab
+    asset: {fileID: 100008, guid: 7b346dd5b9c872e4f811ddc8000908a1, type: 3}
+  - key: Assets/100BestEffectPack/Effects/FireEffect/FireEffect1.prefab
+    asset: {fileID: 100002, guid: 8ab6c72f39c05e2488825eb424cb36d4, type: 3}
+  - key: Assets/100BestEffectPack/Effects/FireEffect/FireEffect3.prefab
+    asset: {fileID: 100002, guid: 966021b078d71d142a4c3d520de32d22, type: 3}
+  - key: Assets/100BestEffectPack/Effects/LightningEffect/LightningEffect1.prefab
+    asset: {fileID: 100010, guid: c3680525f45d82543be3d8c94fe9b19f, type: 3}
+  - key: Assets/100BestEffectPack/Effects/LightningEffect/LightningEffect2.prefab
+    asset: {fileID: 100012, guid: 517d26ab6aa4e1d4082a18f6d6d73814, type: 3}
+  - key: Assets/100BestEffectPack/Effects/OtherMagicEffect/MagicEffect8.prefab
+    asset: {fileID: 100010, guid: 762a3772581389a4d9114382a513f360, type: 3}
+  - key: Assets/BTM_Assets/BTM_Items_Gems/Prefabs/BluePotion.prefab
+    asset: {fileID: 8398601021662225049, guid: 67ebebe313b325b49a8c33c825bdabe5, type: 3}
+  - key: Assets/BTM_Assets/BTM_Items_Gems/Prefabs/Bomb.prefab
+    asset: {fileID: 9021979860543945138, guid: e02b31792a067c74a81e275fcda3930b, type: 3}
+  - key: Assets/BTM_Assets/BTM_Items_Gems/Prefabs/Coin.prefab
+    asset: {fileID: 6954758372675618198, guid: 6a301d09debaf1e4a8d3e2657cc44a96, type: 3}
+  - key: Assets/BTM_Assets/BTM_Items_Gems/Prefabs/Diamondo.prefab
+    asset: {fileID: 7669856486780617717, guid: 5a2ef7db5b7c1db4a8adf9e71ea2e879, type: 3}
+  - key: Assets/BTM_Assets/BTM_Items_Gems/Prefabs/HeartGem.prefab
+    asset: {fileID: 679864369103879499, guid: 7c857df6f3a0c364997001a2dc84dbcf, type: 3}
+  - key: Assets/BTM_Assets/BTM_Items_Gems/Prefabs/RedPotion.prefab
+    asset: {fileID: 7215856734752065869, guid: 1242a88922ac6d34da67517f4c97626b, type: 3}
+  - key: Assets/BTM_Assets/BTM_Items_Gems/Prefabs/Ruby.prefab
+    asset: {fileID: 8515284304091221328, guid: e61c9a4b7ad4e684f9866d27135607f5, type: 3}
+  - key: Assets/BTM_Assets/BTM_Items_Gems/Prefabs/Ruby2.prefab
+    asset: {fileID: 8975035450620130412, guid: c8b9bc24f5f39c747b10e99a670e562d, type: 3}
+  - key: Assets/BTM_Assets/BTM_Items_Gems/Prefabs/SpeedChevYellow.prefab
+    asset: {fileID: 5310963310368244162, guid: 84b95e80250efd2408969492c3002afd, type: 3}
+  - key: Assets/BTM_Assets/BTM_Items_Gems/Prefabs/SphereGem.prefab
+    asset: {fileID: 8476828237768496633, guid: d8b39e1612b32b94d84dfe14087815b2, type: 3}
+  - key: Assets/BTM_Assets/BTM_Items_Gems/Prefabs/StarGem1.prefab
+    asset: {fileID: 7478814756364031717, guid: 9c6032bc7284a5146a9b61081bf3c510, type: 3}
+  - key: Assets/BTM_Assets/BTM_Items_Gems/Prefabs/StarGem3.prefab
+    asset: {fileID: 1276859104628764932, guid: c51c431c1c28a7b4082c610fc0aa0a46, type: 3}
+  - key: Assets/BTM_Assets/BTM_Items_Gems/Prefabs/Thunder.prefab
+    asset: {fileID: 5225455176718880169, guid: 59fd80584945fc7448940995b97dab30, type: 3}
+  - key: Assets/FreeTestCharacterAsuna/FBX/Animations/009Conversation.fbx|ConversationYes
+    asset: {fileID: -9141139134340891909, guid: c03cb229cd9202d499d90256135950dc, type: 3}
+  - key: Assets/FreeTestCharacterAsuna/FBX/Animations/022Unarmed.fbx|PunchRight
+    asset: {fileID: -1628610361925504437, guid: 7f4d48cdc8bc8144ca455a4eb597ba4d, type: 3}
+  - key: Assets/FreeTestCharacterAsuna/FBX/Animations/023OneHandMeleeWeapon.fbx|AttackRightHand
+    asset: {fileID: 5272073439597549852, guid: 48857c97fb2d42f49b7dc2b42d517550, type: 3}
+  - key: Assets/Hovl Studio/Magic effects pack/Prefabs/AoE effects/AoE slash orange.prefab
+    asset: {fileID: 689667626583958020, guid: 1336648bc1d8baf46a4515860950c9d4, type: 3}
+  - key: Assets/Hovl Studio/Magic effects pack/Prefabs/AoE effects/Ground AOE explosion.prefab
+    asset: {fileID: 4994997792314849709, guid: 3dd50886582244645be87adb42aa8528, type: 3}
+  - key: Assets/Hovl Studio/Magic effects pack/Prefabs/Character auras/Lightning aura.prefab
+    asset: {fileID: 7131401307255788800, guid: 4d9a3b35b3bc07649b697df7fb497b6d, type: 3}
+  - key: Assets/Hovl Studio/Magic effects pack/Prefabs/Hits and explosions/Electro hit.prefab
+    asset: {fileID: 2965222256817593503, guid: a164e676dbbd6e54587237e619372c98, type: 3}
+  - key: Assets/Hovl Studio/Magic effects pack/Prefabs/Hits and explosions/Holy hit.prefab
+    asset: {fileID: 2944396702758532163, guid: e190bf97c041e58448af6b043116cba0, type: 3}
+  - key: Assets/Hovl Studio/Magic effects pack/Prefabs/Magic circles/Magic circle.prefab
+    asset: {fileID: 3744133877081091469, guid: a2a060732547fe64581bb0cb3c2bdf1d, type: 3}
+  - key: Assets/Hovl Studio/Magic effects pack/Prefabs/Magic shields/Magic shield blue.prefab
+    asset: {fileID: 1289543790355709915, guid: b99922c2f59b1a542bdd06ae8bee47ae, type: 3}
+  - key: Assets/JMO Assets/Cartoon FX Remaster/CFXR Prefabs/Impacts/CFXR2 Ground Hit.prefab
+    asset: {fileID: 3432958286849152088, guid: 87ee7299dd44ed747af24dbb91bcd33b, type: 3}
+  - key: Assets/JMO Assets/Cartoon FX Remaster/CFXR Prefabs/Misc/CFXR Flash.prefab
+    asset: {fileID: 7177991128484655659, guid: 59a35ab9f68edff40b6e5332bed330f5, type: 3}
+  - key: Assets/JMO Assets/Cartoon FX Remaster/CFXR Prefabs/Misc/CFXR Magic Poof.prefab
+    asset: {fileID: 9157105887711914197, guid: c4f829cb7dd4b864caf8832ec5b1ee55, type: 3}
+  - key: Assets/JMO Assets/Cartoon FX Remaster/CFXR Prefabs/Misc/CFXR3 Hit Misc A.prefab
+    asset: {fileID: 1429954232896169633, guid: 83036083a4ebcd34f98131bd3cf6f4d2, type: 3}
+  - key: Assets/JMO Assets/Cartoon FX Remaster/CFXR Prefabs/Sword Trails/Plain/CFXR4 Sword Hit PLAIN (Cross).prefab
+    asset: {fileID: 8525990746615576120, guid: b85d21f3b8fed714bacf0c4fd50fa512, type: 3}
+  - key: Assets/JMO Assets/Cartoon FX Remaster/CFXR Prefabs/Texts/CFXR _SLASH_.prefab
+    asset: {fileID: 904662820145583817, guid: 019faff12646bd8438ea56e8e7861fd8, type: 3}
+  - key: Assets/Vefects/Free Fire VFX URP/Particles/VFX_Fire_01_Medium.prefab
+    asset: {fileID: 8295591563862043295, guid: 98c5ce036f68d8941922e7541fb70887, type: 3}
+  - key: Assets/Vefects/Free Fire VFX URP/Particles/VFX_Fire_01_Small.prefab
+    asset: {fileID: 1781949194303238870, guid: 4e35892e4c5444340a0e2189311808e5, type: 3}
+  - key: Assets/Vefects/Free Fire VFX URP/Particles/VFX_Fire_Floor_01.prefab
+    asset: {fileID: 1255053967005034563, guid: 2ee7574cb1211da4ba89d1838327b5c4, type: 3}
+  - key: Assets/Vefects/Free Fire VFX URP/Particles/VFX_Fire_Floor_01_Simple.prefab
+    asset: {fileID: 1255053967005034563, guid: 858e79faf6de940498a11b25374053d0, type: 3}
+  - key: Assets/chibi_asssets/KayKit_Character_Animations_1.1/KayKit_Character_Animations_1.1/Animations/fbx/Rig_Medium/Rig_Medium_CombatMelee.fbx|Melee_1H_Attack_Chop
+    asset: {fileID: 4043807988371827432, guid: 48ae9374996210d4887c9b272ec0849b, type: 3}
+  - key: Assets/chibi_asssets/KayKit_Character_Animations_1.1/KayKit_Character_Animations_1.1/Animations/fbx/Rig_Medium/Rig_Medium_CombatRanged.fbx|Ranged_Magic_Raise
+    asset: {fileID: 7719806121101089419, guid: 3339d9ff82a9b4946b51c5a0ccc5724d, type: 3}
+  - key: Assets/chibi_asssets/KayKit_Character_Animations_1.1/KayKit_Character_Animations_1.1/Animations/fbx/Rig_Medium/Rig_Medium_Simulation.fbx|Cheering
+    asset: {fileID: -3554408864086334942, guid: 825630b1c1e05c6439fc31d01d1c9550, type: 3}
+  - key: Assets/chibi_asssets/KayKit_Character_Animations_1.1/KayKit_Character_Animations_1.1/Animations/fbx/Rig_Medium/Rig_Medium_Simulation.fbx|Waving
+    asset: {fileID: 3848355206397108983, guid: 825630b1c1e05c6439fc31d01d1c9550, type: 3}
+  defaultDropTable: {fileID: 11400000, guid: 4ba25a9c3a9d35d4199ed9389062cb50, type: 2}
+  mimicPrefab: {fileID: 2158237781912093567, guid: 85a7a85a982608f40a3a70a4c2a02131, type: 3}
+  rarePassiveDrops:
+  - {fileID: 11400000, guid: f98f8ec787877874a8d3282f36a6de5a, type: 2}
+  - {fileID: 11400000, guid: 3af31e128b59cc848906e91dfe1531ed, type: 2}
+  - {fileID: 11400000, guid: ff3eca5825e409341b8cfe4c668a46ce, type: 2}
+  - {fileID: 11400000, guid: 92e08496cce14354ea7817d508fb4ac5, type: 2}

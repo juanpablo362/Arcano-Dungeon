@@ -1,5 +1,6 @@
 using System.Collections;
 using ArcanoDungeon.Infrastructure.Audio;
+using ArcanoDungeon.Features.Assassin;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
@@ -38,6 +39,7 @@ public class EnemyAI : MonoBehaviour
     private static readonly int SpeedHash = Animator.StringToHash("Speed");
     private static readonly int AttackHash = Animator.StringToHash("Attack");
     private static readonly int AttackStateHash = Animator.StringToHash("Attack");
+    public bool HasPlayerTarget => playerTarget != null && !AssassinAbilities.IsConcealed(playerTarget);
 
     void Awake()
     {
@@ -103,6 +105,8 @@ public class EnemyAI : MonoBehaviour
 
         ApplyGravityStep();
 
+        if (AssassinAbilities.IsConcealed(playerTarget)) LosePlayer();
+
         if (isStaggered)
         {
             SetSpeed(0f);
@@ -111,7 +115,7 @@ public class EnemyAI : MonoBehaviour
         }
 
         ResolvePlayer(false);
-        if (playerTarget == null)
+        if (playerTarget == null || AssassinAbilities.IsConcealed(playerTarget))
         {
             SetSpeed(0f);
             MoveVerticalOnly();
@@ -238,7 +242,7 @@ public class EnemyAI : MonoBehaviour
 
         if (enemyHealth != null && enemyHealth.IsDead)
             return;
-        if (playerTarget == null)
+        if (playerTarget == null || AssassinAbilities.IsConcealed(playerTarget))
             return;
 
         Vector3 flatTarget = new Vector3(playerTarget.position.x, transform.position.y, playerTarget.position.z);
@@ -329,7 +333,7 @@ public class EnemyAI : MonoBehaviour
 
     void ResolvePlayer(bool force)
     {
-        if (!force && playerTarget != null && playerTarget.gameObject.activeInHierarchy)
+        if (!force && playerTarget != null && playerTarget.gameObject.activeInHierarchy && !AssassinAbilities.IsConcealed(playerTarget))
             return;
         if (!force && Time.time < nextPlayerSearchTime)
             return;
@@ -338,22 +342,35 @@ public class EnemyAI : MonoBehaviour
         playerTarget = null;
 
         var tagged = GameObject.FindGameObjectWithTag("Player");
-        if (tagged != null)
+        if (tagged != null && !AssassinAbilities.IsConcealed(tagged.transform))
         {
             playerTarget = tagged.transform;
             return;
         }
 
         var controllerPlayer = Object.FindAnyObjectByType<PlayerController>();
-        if (controllerPlayer != null)
+        if (controllerPlayer != null && !AssassinAbilities.IsConcealed(controllerPlayer.transform))
         {
             playerTarget = controllerPlayer.transform;
             return;
         }
 
         var health = Object.FindAnyObjectByType<PlayerHealth>();
-        if (health != null)
+        if (health != null && !AssassinAbilities.IsConcealed(health.transform))
             playerTarget = health.transform;
+    }
+
+    void LosePlayer()
+    {
+        playerTarget = null; aggroActivatedTime = -1f; playedAggroRoar = false;
+        if (attackRoutine != null) { StopCoroutine(attackRoutine); attackRoutine = null; }
+        if (isAttacking && animator != null)
+        {
+            if (attackParam != -1) animator.ResetTrigger(attackParam);
+            if (animator.HasState(0, Animator.StringToHash("Idle"))) animator.CrossFade("Idle", .1f);
+        }
+        isAttacking = false; hasDealtDamageThisAttack = false;
+        SetSpeed(0f);
     }
 
     public void NotifyHitReaction(float duration = 0.08f)

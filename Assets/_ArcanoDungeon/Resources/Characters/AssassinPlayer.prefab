@@ -1,0 +1,551 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1331407036847896875
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6252876532972265416}
+  m_Layer: 0
+  m_Name: WeaponTip
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6252876532972265416
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1331407036847896875}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.000000003170498, y: 0.004369721, z: -9.313226e-10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5756061800920202329}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3870650439952264325
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6091981546565330884}
+  m_Layer: 0
+  m_Name: WeaponBase
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6091981546565330884
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3870650439952264325}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.000000002569139, y: 0.0000000024957627, z: 9.016674e-10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5756061800920202329}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4837280637989445266
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6763693449041257116}
+  - component: {fileID: 9159429864712625489}
+  - component: {fileID: 5880866912785590433}
+  - component: {fileID: 1354711122332817355}
+  - component: {fileID: 3064061365134226818}
+  - component: {fileID: 2548828036963323767}
+  - component: {fileID: 8043209990718139979}
+  - component: {fileID: 8622838053346622195}
+  - component: {fileID: 269548860375078280}
+  - component: {fileID: 866572732289497502}
+  - component: {fileID: 7421578598069997547}
+  - component: {fileID: 6007583239257035164}
+  - component: {fileID: 8439577286558370380}
+  - component: {fileID: 7059669686301986047}
+  - component: {fileID: 412179017413158512}
+  - component: {fileID: 6227238877316486162}
+  m_Layer: 0
+  m_Name: AssassinPlayer
+  m_TagString: Player
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6763693449041257116
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4837280637989445266}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 3151478154955137596}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!143 &9159429864712625489
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4837280637989445266}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Height: 1.6675
+  m_Radius: 0.2645
+  m_SlopeLimit: 45
+  m_StepOffset: 0.2875
+  m_SkinWidth: 0.04025
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0.83375, z: 0}
+--- !u!65 &5880866912785590433
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4837280637989445266}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.529, y: 1.6675, z: 0.529}
+  m_Center: {x: 0, y: 0.83375, z: 0}
+--- !u!114 &1354711122332817355
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4837280637989445266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53a33a5d07e1dad4bb1e5c7820afaa44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
+  maxHealth: 110
+  currentHealth: 110
+  healthSlider: {fileID: 0}
+  healthText: {fileID: 0}
+  hurtFlashColor: {r: 1, g: 0.15, b: 0.12, a: 1}
+  hurtFlashCount: 1
+  hurtFlashInterval: 0.08
+--- !u!114 &3064061365134226818
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4837280637989445266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e65131287aed1d546942b79e4b560c75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ArcanoDungeon.Infrastructure.Input.PlayerInputReader
+  actions: {fileID: -944628639613478452, guid: b7e4c2a19f6d4e0a9c8b7a6543210fed, type: 3}
+  actionMapName: Player
+--- !u!114 &2548828036963323767
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4837280637989445266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ae1884ce7556564c8222624036f2e40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ArcanoDungeon.Features.Player.PlayerStamina
+  maxStamina: 100
+  regenPerSecond: 18
+  regenDelay: 0.55
+  dashCost: 22
+  specialCost: 40
+  staminaSlider: {fileID: 0}
+  staminaText: {fileID: 0}
+--- !u!114 &8043209990718139979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4837280637989445266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da46ba0f1d618cb46944ea5259e399a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ArcanoDungeon.Features.Player.View.AimRaycaster
+  aimCamera: {fileID: 0}
+  maxDistance: 50
+  hitMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  triggerInteraction: 1
+--- !u!114 &8622838053346622195
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4837280637989445266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fac5faac1e1f8224193b7d2283fdd11f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ArcanoDungeon.Features.Player.Motor.PlayerMotor
+  input: {fileID: 0}
+  cameraRig: {fileID: 0}
+  aimRaycaster: {fileID: 0}
+  character: {fileID: 0}
+  meleeWeapon: {fileID: 0}
+  stamina: {fileID: 0}
+  dashDistance: 5
+  dashDuration: 0.18
+  dashCooldown: 1.5
+  dashIFrames: 0.3
+  aimRotationHold: 0.25
+--- !u!114 &269548860375078280
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4837280637989445266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f441549dd11ae44bae87e26f6cfdd5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ArcanoDungeon.Features.Player.View.PlayerCameraBootstrap
+  cameraTargetName: CameraTarget
+  cameraTargetLocalPosition: {x: 0, y: 1.0925, z: 0}
+  followHeightOverride: 1.265
+--- !u!114 &866572732289497502
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4837280637989445266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 177c0f576dd039c43bf820a6c5496fff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ArcanoDungeon.Features.Player.PlayerInteract
+  input: {fileID: 0}
+  interactRange: 2.6
+--- !u!114 &7421578598069997547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4837280637989445266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e455c328ce48b9042b9b661f0ae542e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ArcanoDungeon.Features.Combat.HeroSpecialAttack
+  input: {fileID: 0}
+  stamina: {fileID: 0}
+  aimRaycaster: {fileID: 0}
+  animator: {fileID: 0}
+  fireballPrefab: {fileID: 0}
+  cooldown: 0.85
+  mageDamage: 70
+  knightDamage: 55
+  misakiDamage: 42
+  yukoDamage: 60
+  knightRadius: 3.2
+  misakiRange: 3.8
+  yukoRadius: 3.6
+--- !u!114 &6007583239257035164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4837280637989445266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 548f21b953b54034c8a891578ea36f8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ArcanoDungeon.Features.Loot.PlayerStats
+  baseMaxShield: 30
+  shieldRegenPerSecond: 8
+  shieldRegenDelay: 3
+  shieldSlider: {fileID: 0}
+  shieldText: {fileID: 0}
+--- !u!114 &8439577286558370380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4837280637989445266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe8000f3de848cd43a0b3169ee8b4457, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  moveSpeed: 6.2
+  runSpeedMultiplier: 1.55
+  crouchSpeedMultiplier: 0.5
+  rotationSpeed: 12
+  gravity: -20
+  jumpHeight: 1.4
+  crouchHeight: 1.0925
+  heightChangeSpeed: 12
+  attackRadius: 2.5
+  attackDamage: 35
+  attackCooldown: 0.65
+  meleeWeapon: {fileID: 0}
+  useFireballOnRightClick: 0
+  fireballPrefab: {fileID: 0}
+  fireballSpawnPoint: {fileID: 0}
+  fireballCooldown: 0.75
+  fireballDamage: 45
+  inputReader: {fileID: 0}
+  playerMotor: {fileID: 0}
+  aimRaycaster: {fileID: 0}
+--- !u!114 &7059669686301986047
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4837280637989445266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 670eb926134936c46b5a092033fcd474, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ArcanoDungeon.Features.Combat.AttackArcVFX
+  weaponTrail: {fileID: 0}
+  slashArcPrefab: {fileID: 904662820145583817, guid: 019faff12646bd8438ea56e8e7861fd8, type: 3}
+  slashSpawnPoint: {fileID: 6252876532972265416}
+  crescentWavePrefab: {fileID: 616171211849938549, guid: 89d7c7a44690e1747b752493ddf1bc89, type: 3}
+  crescentSpawnPoint: {fileID: 6763693449041257116}
+  crescentTravelSeconds: 0.28
+  punctualFlashPrefab: {fileID: 8525990746615576120, guid: b85d21f3b8fed714bacf0c4fd50fa512, type: 3}
+  weaponTip: {fileID: 6252876532972265416}
+  owner: {fileID: 6763693449041257116}
+--- !u!114 &412179017413158512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4837280637989445266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d372f752101b4784081c5f4e6cb4cff2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ArcanoDungeon.Features.Combat.MeleeWeaponController
+  animator: {fileID: 168542306476730672}
+  weaponBaseTransform: {fileID: 6091981546565330884}
+  weaponTipTransform: {fileID: 6252876532972265416}
+  attackArcVfx: {fileID: 7059669686301986047}
+  impactVfxPrefab: {fileID: 0}
+  characterController: {fileID: 9159429864712625489}
+  attackStyle: 0
+  fallbackWeaponLength: 1.65
+  reachMultiplier: 1.95
+  arcAngle: 110
+  crossFadeDuration: 0.08
+  damagePerStep: 1c0000002000000030000000i
+  punctualRadius: 0.55
+  inputBufferWindow: 0.35
+  comboResetTime: 0.7
+  maxComboSteps: 3
+  requireHitToContinueCombo: 0
+  meleeAttackMoveMultiplier: 0
+  rangedAttackMoveMultiplier: 0.3
+  meleeLungeDistance: 1.5
+  meleeLungeDuration: 0.3
+  attackFallbackSeconds: 1.35
+  hitstopDuration: 0.04
+  hitstopSpeed: 0.05
+  hitMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  enemyTag: Enemy
+--- !u!114 &6227238877316486162
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4837280637989445266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acb37df2b2fe03e4093bd7cc282e9c83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ArcanoDungeon.Features.Assassin.AssassinAbilities
+  knifePrefab: {fileID: 6907659664287770752, guid: 08c09d5fd658417448ffd2619e9c19e2, type: 3}
+  throwingHand: {fileID: 4445198095100210933}
+  shadowPrefab: {fileID: 6900655932725213702, guid: 05a03ed8bfeb251499c186fa5d2221f6, type: 3}
+  shadowScale: 1.15
+  throwCooldown: 0.55
+  knifeDamage: 20
+  poisonDamage: 6
+  poisonTicks: 4
+  poisonInterval: 1
+--- !u!1001 &1152360802913389595
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 6763693449041257116}
+    m_Modifications:
+    - target: {fileID: 2612737200936037927, guid: cf17fbe4954169c4f8d46e601dfd2070, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.713
+      objectReference: {fileID: 0}
+    - target: {fileID: 2612737200936037927, guid: cf17fbe4954169c4f8d46e601dfd2070, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.713
+      objectReference: {fileID: 0}
+    - target: {fileID: 2612737200936037927, guid: cf17fbe4954169c4f8d46e601dfd2070, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.713
+      objectReference: {fileID: 0}
+    - target: {fileID: 2612737200936037927, guid: cf17fbe4954169c4f8d46e601dfd2070, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2612737200936037927, guid: cf17fbe4954169c4f8d46e601dfd2070, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2612737200936037927, guid: cf17fbe4954169c4f8d46e601dfd2070, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2612737200936037927, guid: cf17fbe4954169c4f8d46e601dfd2070, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2612737200936037927, guid: cf17fbe4954169c4f8d46e601dfd2070, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2612737200936037927, guid: cf17fbe4954169c4f8d46e601dfd2070, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2612737200936037927, guid: cf17fbe4954169c4f8d46e601dfd2070, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2612737200936037927, guid: cf17fbe4954169c4f8d46e601dfd2070, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2612737200936037927, guid: cf17fbe4954169c4f8d46e601dfd2070, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2612737200936037927, guid: cf17fbe4954169c4f8d46e601dfd2070, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3688979251920224585, guid: cf17fbe4954169c4f8d46e601dfd2070, type: 3}
+      propertyPath: m_Name
+      value: Visual
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 4620589577767727170, guid: cf17fbe4954169c4f8d46e601dfd2070, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6091981546565330884}
+    - targetCorrespondingSourceObject: {fileID: 4620589577767727170, guid: cf17fbe4954169c4f8d46e601dfd2070, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6252876532972265416}
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3688979251920224585, guid: cf17fbe4954169c4f8d46e601dfd2070, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2745135917159339822}
+  m_SourcePrefab: {fileID: 100100000, guid: cf17fbe4954169c4f8d46e601dfd2070, type: 3}
+--- !u!95 &168542306476730672 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 984259026971206955, guid: cf17fbe4954169c4f8d46e601dfd2070, type: 3}
+  m_PrefabInstance: {fileID: 1152360802913389595}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &3151478154955137596 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2612737200936037927, guid: cf17fbe4954169c4f8d46e601dfd2070, type: 3}
+  m_PrefabInstance: {fileID: 1152360802913389595}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4381968484922379602 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3688979251920224585, guid: cf17fbe4954169c4f8d46e601dfd2070, type: 3}
+  m_PrefabInstance: {fileID: 1152360802913389595}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2745135917159339822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4381968484922379602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6958ea32638faf84d899a3e34fcba5a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ArcanoDungeon.Features.Combat.AttackAnimEventRelay
+  melee: {fileID: 0}
+--- !u!4 &4445198095100210933 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3624982182617703150, guid: cf17fbe4954169c4f8d46e601dfd2070, type: 3}
+  m_PrefabInstance: {fileID: 1152360802913389595}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &5756061800920202329 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4620589577767727170, guid: cf17fbe4954169c4f8d46e601dfd2070, type: 3}
+  m_PrefabInstance: {fileID: 1152360802913389595}
+  m_PrefabAsset: {fileID: 0}

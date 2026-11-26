@@ -178,6 +178,22 @@ namespace ArcanoDungeon.Infrastructure.Audio
                 return;
             }
 
+            if (sceneName.Contains("Castle"))
+            {
+                if (currentMode == "Castle" && bgm != null && bgm.isPlaying)
+                    return;
+                if (introRoutine != null)
+                {
+                    StopCoroutine(introRoutine);
+                    introRoutine = null;
+                }
+                StopWhispers();
+                PlayLoop(catalog.level2Loop != null ? catalog.level2Loop : catalog.level1Loop, catalog.bgmVolume);
+                if (bgm != null) bgm.pitch = 0.94f;
+                currentMode = "Castle";
+                return;
+            }
+
             if (introRoutine != null)
             {
                 StopCoroutine(introRoutine);
@@ -247,6 +263,7 @@ namespace ArcanoDungeon.Infrastructure.Audio
                 return;
             }
 
+            bgm.pitch = 1f;
             if (bgm.isPlaying && bgm.clip == clip && bgm.loop)
                 return;
 

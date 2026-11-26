@@ -6,6 +6,7 @@ public enum HeroId
     Knight = 1,
     Misaki = 2,
     Yuko = 3,
+    Assassin = 4,
 }
 
 public sealed class HeroProfile
@@ -102,6 +103,24 @@ public static class HeroRoster
             Speed = 10,
             Crit = 6,
             Accent = new Color(0.35f, 0.78f, 0.92f),
+        },
+        new HeroProfile
+        {
+            Id = HeroId.Assassin,
+            Name = "Asesina",
+            Title = "Asesina",
+            Summary = "Lanza cuchillos envenenados y se cubre de sombras durante el sigilo para evitar la detección y los ataques enemigos. Encadena cortes con sus dos dagas.",
+            Ability = "Filo doble",
+            Abilities = new[] { "swords", "shadow", "spark", "ward" },
+            PrefabPath = "Assets/_ArcanoDungeon/Prefabs/AssassinPreview.prefab",
+            PortraitPath = "Assets/_ArcanoDungeon/Art/Characters/Assassin/Portrait.png",
+            StageScale = ArcanoDungeon.Features.Assassin.AssassinSizing.StageScale,
+            Health = 7,
+            Attack = 8,
+            Defense = 5,
+            Speed = 9,
+            Crit = 8,
+            Accent = new Color(0.78f, 0.35f, 0.65f),
         },
     };
 

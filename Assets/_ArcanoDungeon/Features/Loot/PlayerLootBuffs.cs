@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using ArcanoDungeon.Features.Combat;
 using ArcanoDungeon.Features.Player;
 using UnityEngine;
@@ -20,6 +21,8 @@ namespace ArcanoDungeon.Features.Loot
         public int BonusDamage { get; private set; }
         public float BonusReach { get; private set; }
         public float BonusMaxStamina { get; private set; }
+        readonly List<LootItemKind> runUpgrades = new List<LootItemKind>();
+        public IReadOnlyList<LootItemKind> RunUpgrades => runUpgrades;
 
         void Awake()
         {
@@ -43,6 +46,8 @@ namespace ArcanoDungeon.Features.Loot
         public string Apply(LootItemKind kind)
         {
             ResolveRefs();
+            if (kind != LootItemKind.Heal && System.Enum.IsDefined(typeof(LootItemKind), kind))
+                runUpgrades.Add(kind);
 
             switch (kind)
             {
@@ -65,7 +70,10 @@ namespace ArcanoDungeon.Features.Loot
                 {
                     float amount = 0.45f;
                     BonusSpeed += amount;
-                    if (character != null)
+                    var stats = GetComponent<PlayerStats>();
+                    if (stats != null)
+                        stats.AddBaseMoveSpeed(amount);
+                    else if (character != null)
                         character.moveSpeed += amount;
                     return $"+{amount:0.##} Velocidad";
                 }

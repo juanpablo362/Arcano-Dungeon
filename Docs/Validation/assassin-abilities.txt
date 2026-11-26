@@ -1,0 +1,29 @@
+PASS Playable prefab includes assassin abilities
+PASS Right mouse button launches one poison knife
+PASS Assassin secondary attack does not activate blocking
+PASS Throw cooldown prevents duplicate launches
+PASS Knife hits once for 20 direct damage
+PASS Knife applies poison to the enemy
+PASS Projectile ignores its owner
+PASS Poison deals four ticks of 6 damage
+PASS Poison expires after its final tick
+PASS Knife can be thrown after cooldown
+PASS A thin wall stops the fast projectile and its poison
+PASS Visible assassin is detected and targeted
+PASS Crouch activates concealment and the shadow visual
+PASS Enemy loses the concealed assassin
+PASS Stealth cancels an enemy attack already winding up
+PASS Poison knives remain usable from stealth
+PASS Throwing from shadows does not expose the assassin
+PASS Cancelled enemy attacks do not deal delayed damage
+PASS Enemy stops pursuing the hidden assassin
+PASS Boss does not start an attack against a hidden assassin
+PASS Enemy and boss cannot hit the concealed assassin
+PASS Leaving crouch restores the normal appearance and visibility
+PASS Enemy detects the assassin again after stealth ends
+PASS Entering shadow cancels a boss attack during its warning
+PASS Cancelled boss warning causes no delayed damage
+PASS Reapplying poison refreshes it without doubling tick damage
+PASS Refreshed poison ends cleanly
+PASS Poison can kill through the normal enemy death system
+PASS Concealment does not persist when the ability is disabled

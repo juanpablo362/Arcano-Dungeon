@@ -38,6 +38,38 @@ namespace ArcanoDungeon.Features.Loot
         float dashCooldownReduce;
         float meleeArcAngleMult = 1f;
 
+        public struct TransitionState
+        {
+            public float Shield;
+            public float RegenDelayRemaining;
+            public float SpeedMultiplier;
+            public float SpeedSecondsRemaining;
+        }
+
+        public TransitionState CaptureTransitionState() => new TransitionState
+        {
+            Shield = currentShield,
+            RegenDelayRemaining = Mathf.Max(0f, nextShieldRegenTime - Time.time),
+            SpeedMultiplier = temporarySpeedMult,
+            SpeedSecondsRemaining = Mathf.Max(0f, temporarySpeedUntil - Time.time)
+        };
+
+        public void RestoreTransitionState(TransitionState state)
+        {
+            currentShield = Mathf.Clamp(state.Shield, 0f, maxShield);
+            nextShieldRegenTime = Time.time + state.RegenDelayRemaining;
+            temporarySpeedMult = state.SpeedSecondsRemaining > 0f ? Mathf.Max(1f, state.SpeedMultiplier) : 1f;
+            temporarySpeedUntil = Time.time + state.SpeedSecondsRemaining;
+            ApplyMoveSpeed();
+            RefreshShieldUi();
+        }
+
+        public void AddBaseMoveSpeed(float amount)
+        {
+            baseMoveSpeed += amount;
+            ApplyMoveSpeed();
+        }
+
         public float CurrentShield => currentShield;
         public float MaxShield => maxShield;
         public float MoveSpeedMultiplier => moveSpeedMult * GetTemporarySpeedMult();
@@ -266,6 +298,15 @@ namespace ArcanoDungeon.Features.Loot
 
         void EnsureShieldUi()
         {
+            if (shieldSlider == null)
+            {
+                var existing = GameObject.Find("PlayerShieldBar");
+                if (existing != null)
+                    shieldSlider = existing.GetComponent<Slider>();
+                var existingText = GameObject.Find("PlayerShieldText");
+                if (existingText != null)
+                    shieldText = existingText.GetComponent<TextMeshProUGUI>();
+            }
             if (shieldSlider != null)
             {
                 shieldSlider.minValue = 0f;

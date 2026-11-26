@@ -52,19 +52,9 @@ namespace ArcanoDungeon.Features.Loot
 
         static ItemData LoadFallbackRare()
         {
-#if UNITY_EDITOR
-            string[] paths =
-            {
-                "Assets/_ArcanoDungeon/Features/Loot/Items/Item_Orbital.asset",
-                "Assets/_ArcanoDungeon/Features/Loot/Items/Item_ChainLightning.asset",
-                "Assets/_ArcanoDungeon/Features/Loot/Items/Item_HolyFireAura.asset",
-                "Assets/_ArcanoDungeon/Features/Loot/Items/Item_VampiricFang.asset",
-            };
-            string path = paths[Random.Range(0, paths.Length)];
-            return UnityEditor.AssetDatabase.LoadAssetAtPath<ItemData>(path);
-#else
-            return null;
-#endif
+            var catalog = ArcanoDungeon.Infrastructure.Assets.DungeonRuntimeAssets.Instance;
+            var drops = catalog != null ? catalog.rarePassiveDrops : null;
+            return drops != null && drops.Length > 0 ? drops[Random.Range(0, drops.Length)] : null;
         }
 
         public void ConfigureRareDrops(ItemData[] drops)

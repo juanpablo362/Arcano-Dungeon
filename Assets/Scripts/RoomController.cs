@@ -163,7 +163,7 @@ public class RoomController : MonoBehaviour
             {
                 Vector3 bossPos = new Vector3(miniBossSpawnPoint.position.x, miniBossSpawnPoint.position.y + 0.05f, miniBossSpawnPoint.position.z);
                 GameObject miniBoss = Instantiate(bossPrefab, bossPos, miniBossSpawnPoint.rotation);
-                miniBoss.name = "Skeleton_MiniBoss";
+                miniBoss.name = bossPrefab.name;
                 miniBoss.transform.localScale = bossPrefab.transform.localScale * miniBossScale;
 
                 EnemyHealth bossHealth = miniBoss.GetComponent<EnemyHealth>();

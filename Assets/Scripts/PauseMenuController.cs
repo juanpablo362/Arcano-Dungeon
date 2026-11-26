@@ -109,6 +109,7 @@ public class PauseMenuController : MonoBehaviour
 
     public void QuitGame()
     {
+        GameSession.ResetRun();
         Time.timeScale = 1f;
         IsOpen = false;
         CameraFollow.SetCursorLocked(false);

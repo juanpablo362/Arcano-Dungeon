@@ -51,6 +51,13 @@ namespace ArcanoDungeon.Features.Player
 
         public bool Has(float cost) => current >= cost;
 
+        public void RestoreCurrent(float value)
+        {
+            current = Mathf.Clamp(value, 0f, maxStamina);
+            nextRegenTime = Time.time + regenDelay;
+            RefreshUi();
+        }
+
         public bool TryConsume(float cost)
         {
             if (cost <= 0f)
@@ -87,6 +94,13 @@ namespace ArcanoDungeon.Features.Player
                 var existing = GameObject.Find("PlayerStaminaBar");
                 if (existing != null)
                     staminaSlider = existing.GetComponent<Slider>();
+            }
+
+            if (staminaText == null)
+            {
+                var existingText = GameObject.Find("PlayerStaminaText");
+                if (existingText != null)
+                    staminaText = existingText.GetComponent<TextMeshProUGUI>();
             }
 
             if (staminaSlider != null)

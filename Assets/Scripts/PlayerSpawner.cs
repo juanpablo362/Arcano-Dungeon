@@ -1,3 +1,4 @@
+using System.Collections;
 using ArcanoDungeon.Features.Loot;
 using UnityEngine;
 
@@ -7,12 +8,11 @@ public class PlayerSpawner : MonoBehaviour
     public GameObject knightPrefab;
     public GameObject misakiPrefab;
     public GameObject yukoPrefab;
+    public GameObject assassinPrefab;
     public Transform startPosition;
 
-    void Start()
+    IEnumerator Start()
     {
-        RunScore.Reset();
-
         var prefabToSpawn = ResolvePrefab();
 
         if (prefabToSpawn != null)
@@ -34,6 +34,9 @@ public class PlayerSpawner : MonoBehaviour
                 player.AddComponent<PowderBombController>();
             if (player.GetComponent<PlayerLootBuffs>() == null)
                 player.AddComponent<PlayerLootBuffs>();
+
+            yield return null;
+            GameSession.RestoreLevelTransition(player);
         }
         else
         {
@@ -51,6 +54,8 @@ public class PlayerSpawner : MonoBehaviour
                 return misakiPrefab != null ? misakiPrefab : knightPrefab != null ? knightPrefab : magePrefab;
             case HeroId.Yuko:
                 return yukoPrefab != null ? yukoPrefab : knightPrefab != null ? knightPrefab : magePrefab;
+            case HeroId.Assassin:
+                return assassinPrefab != null ? assassinPrefab : Resources.Load<GameObject>("Characters/AssassinPlayer");
             case HeroId.Mage:
             default:
                 return magePrefab != null ? magePrefab : knightPrefab;
