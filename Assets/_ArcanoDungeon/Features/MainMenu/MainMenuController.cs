@@ -17,6 +17,9 @@ public class MainMenuController : MonoBehaviour
     public float spellVolume = 0.2f;
 
     ControlsGuide guide;
+    MainMenuOptions settings;
+    UnityEngine.UI.Button optionsButton;
+    GameObject menuPanel;
 
     void Awake()
     {
@@ -46,10 +49,12 @@ public class MainMenuController : MonoBehaviour
 
     void Update()
     {
-        if (guide == null || !guide.IsShown)
-            return;
         var keyboard = Keyboard.current;
-        if (keyboard != null && keyboard.escapeKey.wasPressedThisFrame)
+        if (keyboard == null || !keyboard.escapeKey.wasPressedThisFrame)
+            return;
+        if (settings != null && settings.gameObject.activeSelf)
+            CloseOptions();
+        else if (guide != null && guide.IsShown)
             guide.Hide();
     }
 
@@ -58,16 +63,23 @@ public class MainMenuController : MonoBehaviour
         var panel = GameObject.Find("MenuPanel");
         if (panel == null)
             return;
+        menuPanel = panel;
 
         var canvas = panel.GetComponentInParent<Canvas>();
         if (canvas != null)
             guide = ControlsGuide.Ensure(canvas.transform);
 
-        if (panel.transform.Find("Help") != null)
-            return;
-
         var options = panel.transform.Find("Options");
         if (options == null)
+            return;
+        optionsButton = options.GetComponent<UnityEngine.UI.Button>();
+        if (optionsButton != null && canvas != null)
+        {
+            optionsButton.interactable = true;
+            optionsButton.onClick.AddListener(() => OpenOptions(canvas));
+        }
+
+        if (panel.transform.Find("Help") != null)
             return;
 
         var clone = Instantiate(options.gameObject, panel.transform);
@@ -87,6 +99,23 @@ public class MainMenuController : MonoBehaviour
 
         var rt = panel.GetComponent<RectTransform>();
         rt.sizeDelta = new Vector2(rt.sizeDelta.x, rt.sizeDelta.y + 70f);
+    }
+
+    void OpenOptions(Canvas canvas)
+    {
+        if (settings == null)
+            settings = MainMenuOptions.Create(canvas.transform, CloseOptions);
+        guide?.Hide();
+        menuPanel.SetActive(false);
+        settings.Show();
+    }
+
+    void CloseOptions()
+    {
+        settings.Hide();
+        menuPanel.SetActive(true);
+        if (EventSystem.current != null)
+            EventSystem.current.SetSelectedGameObject(optionsButton.gameObject);
     }
 
     void ShowHelp()

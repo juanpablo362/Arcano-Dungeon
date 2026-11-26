@@ -47,12 +47,6 @@ public static class SetupLootFullGdd
             "+1 carga de bomba (Q).", 8, bombCharges: 1);
 
         // Weapons
-        var volcanic = UpsertWeapon(ItemsDir + "/Item_VolcanicGreatsword.asset", "volcanic_greatsword",
-            "Mandoble Volcánico", "Onda de fuego en cada golpe.", 5, WeaponProfileKind.VolcanicGreatsword, 14, 0.15f);
-        var blizzard = UpsertWeapon(ItemsDir + "/Item_BlizzardStaff.asset", "blizzard_staff",
-            "Báculo de Ventisca", "Ráfaga de hielo que ralentiza.", 5, WeaponProfileKind.BlizzardStaff, 10, 0f);
-        var crossbow = UpsertWeapon(ItemsDir + "/Item_RepeatingCrossbow.asset", "repeating_crossbow",
-            "Ballesta Repetidora", "Disparo automático al mantener clic.", 5, WeaponProfileKind.RepeatingCrossbow, 8, 0f);
         var gauntlets = UpsertWeapon(ItemsDir + "/Item_EarthquakeGauntlets.asset", "earthquake_gauntlets",
             "Guanteletes del Terremoto", "Onda expansiva con knockback.", 5, WeaponProfileKind.EarthquakeGauntlets, 12, 0.1f);
         var grimoire = UpsertWeapon(ItemsDir + "/Item_SummonerGrimoire.asset", "summoner_grimoire",
@@ -62,7 +56,7 @@ public static class SetupLootFullGdd
         {
             E(orbital, 10), E(chain, 10), E(hermes, 12), E(aura, 10), E(vamp, 9), E(lens, 9), E(crystalHeart, 8),
             E(potion, 18), E(crystal, 12), E(bomb, 8),
-            E(volcanic, 5), E(blizzard, 5), E(crossbow, 5), E(gauntlets, 5), E(grimoire, 4),
+            E(gauntlets, 5), E(grimoire, 4),
         };
 
         WriteTable(TablePath, all);

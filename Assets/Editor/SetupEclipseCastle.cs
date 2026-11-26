@@ -24,8 +24,8 @@ public static class SetupEclipseCastle
     const string Monsters = "Assets/_ArcanoDungeon/Prefabs/Monsters/";
     const float Opening = 5f;
     static Material stone, masonry, floor, kit, gold, iron, carpet, rune, shadow, dust;
-    static Mesh crystalMesh;
     static LootDropTable loot;
+    static float wallHeight;
 
     sealed class Chamber
     {
@@ -53,6 +53,7 @@ public static class SetupEclipseCastle
         var scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
         var sourceSpawner = Object.FindAnyObjectByType<PlayerSpawner>();
         var heroes = new[] { sourceSpawner.magePrefab, sourceSpawner.knightPrefab, sourceSpawner.misakiPrefab, sourceSpawner.yukoPrefab };
+        wallHeight = GetWallHeight(heroes);
         var sourceExit = Object.FindObjectsByType<LevelExit>(FindObjectsInactive.Include).First();
         var portal = Object.Instantiate(sourceExit.gameObject);
         portal.name = "EclipseVictoryPortal";
@@ -81,6 +82,7 @@ public static class SetupEclipseCastle
         foreach (var link in links) RegisterLink(link.Item1, link.Item2);
         foreach (var chamber in rooms) BuildRoom(root.transform, chamber);
         foreach (var link in links) Corridor(root.transform, link.Item1, link.Item2);
+        AddBackdrop(root.transform);
 
         Combat(guardia, new[] { "EnemySkellWarrior", "EnemySkellMage" }, 3);
         Combat(armeria, new[] { "EnemyOrc", "EnemySkellWarrior" }, 3);
@@ -97,15 +99,16 @@ public static class SetupEclipseCastle
         trono.Room.miniBossMaxHealth = 680;
         trono.Room.miniBossScale = 1.1f;
         trono.Room.miniBossSpawnPoint = Point(trono.Room.transform, "RegenteSpawn", trono.Center + new Vector3(0f, 0.2f, 2f));
+        trono.Room.secondBossPrefab = Load<GameObject>(Monsters + "EnemyMonsterLowPoly.prefab");
+        trono.Room.secondBossSpawnPoint = Point(trono.Room.transform, "MonsterLowPolySpawn", trono.Center + new Vector3(5f, 0.2f, 1f));
 
         Chest(biblioteca, new Vector3(0f, 0f, 5f), false);
         Chest(armeria, new Vector3(5f, 0f, 4f), true);
         Chest(capilla, new Vector3(-5f, 0f, 4f), true);
         Chest(galeria, new Vector3(5f, 0f, 5f), true);
         var castle = root.AddComponent<EclipseCastleController>();
-        castle.sealRooms = new[] { armeria.Room, capilla.Room };
-        castle.sealBeacons = new[] { Beacon(armeria.Room.transform, armeria.Center + new Vector3(0f, 0f, 5.5f), "Sello del Sol"),
-            Beacon(capilla.Room.transform, capilla.Center + new Vector3(0f, 0f, 5.5f), "Sello de la Luna") };
+        castle.seals = new[] { Beacon(armeria.Room, armeria.Center + new Vector3(0f, 0f, 5.5f), "Sello del Sol"),
+            Beacon(capilla.Room, capilla.Center + new Vector3(0f, 0f, 5.5f), "Sello de la Luna") };
         castle.throneRoom = trono.Room;
         castle.throneBarrier = Gate(root.transform, "Barrera de los dos sellos", new Vector3(0f, 0f, 67.5f), false, true);
         castle.throneBarrier.SetActive(true);
@@ -217,9 +220,9 @@ public static class SetupEclipseCastle
             if (open && Mathf.Abs(distance) < Opening * 0.5f + 1.4f) continue;
             var position = c.Center + normal * offset + along * distance;
             Model(Mathf.Abs(distance) > span * 0.3f ? "wall_pillar.fbx" : "wall_archedwindow_gated.fbx",
-                parent, position, horizontal ? 0f : 90f, 3f, 4.3f, stone);
-            Block("WallCollision", parent, position + Vector3.up * 2.5f,
-                horizontal ? new Vector3(3f, 5f, 0.8f) : new Vector3(0.8f, 5f, 3f), null, true);
+                parent, position, horizontal ? 0f : 90f, 3f, wallHeight, stone);
+            Block("WallCollision", parent, position + Vector3.up * (wallHeight * 0.5f),
+                horizontal ? new Vector3(3f, wallHeight, 0.8f) : new Vector3(0.8f, wallHeight, 3f), null, true);
         }
         // Solid spans leave exactly five metres of passage, including at the edges of tiled wall models.
         float length = open ? (span - Opening) * 0.5f : span;
@@ -228,11 +231,11 @@ public static class SetupEclipseCastle
             var position = c.Center + normal * offset + along * (sign * (Opening * 0.5f + length * 0.5f));
             Block("MasonryBase", parent, position + Vector3.up * 0.3f,
                 horizontal ? new Vector3(length, 0.6f, 0.9f) : new Vector3(0.9f, 0.6f, length), stone, true);
-            Block("WallSafety", parent, position + Vector3.up * 2.5f,
-                horizontal ? new Vector3(length, 5f, 0.65f) : new Vector3(0.65f, 5f, length), null, true);
+            Block("WallSafety", parent, position + Vector3.up * (wallHeight * 0.5f),
+                horizontal ? new Vector3(length, wallHeight, 0.65f) : new Vector3(0.65f, wallHeight, length), null, true);
         }
         foreach (float alongOffset in new[] { -span * 0.5f, span * 0.5f })
-            Model("pillar_decorated.fbx", parent, c.Center + normal * offset + along * alongOffset, 0f, 1.1f, 5f, stone);
+            Model("pillar_decorated.fbx", parent, c.Center + normal * offset + along * alongOffset, 0f, 1.1f, wallHeight, stone);
     }
 
     static void Corridor(Transform root, Chamber a, Chamber b)
@@ -248,14 +251,10 @@ public static class SetupEclipseCastle
         Tiles(parent, center, horizontal ? length : 6f, horizontal ? 6f : length, horizontal);
         foreach (float sign in new[] { -1f, 1f })
         {
-            var offset = horizontal ? new Vector3(0f, 0.6f, sign * 3.15f) : new Vector3(sign * 3.15f, 0.6f, 0f);
-            var parapet = Block("BridgeParapet", parent, center + offset,
-                horizontal ? new Vector3(length, 1.2f, 0.45f) : new Vector3(0.45f, 1.2f, length), stone, true);
-            // Extend collision above the visible rail so a jump cannot leave the level.
-            var guard = parapet.GetComponent<BoxCollider>();
-            guard.size = new Vector3(1f, 5f / 1.2f, 1f);
-            guard.center = Vector3.up * (1.9f / 1.2f);
-            Block("ParapetGold", parent, center + offset + Vector3.up * 0.64f,
+            var offset = horizontal ? Vector3.forward * (sign * 3.15f) : Vector3.right * (sign * 3.15f);
+            Block("BridgeParapet", parent, center + offset + Vector3.up * (wallHeight * 0.5f),
+                horizontal ? new Vector3(length, wallHeight, 0.45f) : new Vector3(0.45f, wallHeight, length), stone, true);
+            Block("ParapetGold", parent, center + offset + Vector3.up * (wallHeight + 0.04f),
                 horizontal ? new Vector3(length, 0.07f, 0.48f) : new Vector3(0.48f, 0.07f, length), gold, false);
         }
         var linkA = a.Room.connectedRooms?.ToList() ?? new List<RoomController>(); linkA.Add(b.Room); a.Room.connectedRooms = linkA.ToArray();
@@ -331,18 +330,80 @@ public static class SetupEclipseCastle
         if (reward) { go.SetActive(false); c.Room.objectToActivateOnClear = go; }
     }
 
-    static GameObject Beacon(Transform parent, Vector3 position, string name)
+    static EclipseSealCrystal Beacon(RoomController room, Vector3 position, string name)
     {
-        var root = new GameObject(name); root.transform.SetParent(parent); root.transform.position = position;
+        var root = new GameObject(name); root.transform.SetParent(room.transform); root.transform.position = position;
         Block("SigilPedestal", root.transform, position + Vector3.up * 0.3f, new Vector3(1.6f, 0.6f, 1.6f), gold, true);
-        var gem = new GameObject("EclipseCrystal", typeof(MeshFilter), typeof(MeshRenderer));
-        gem.transform.SetParent(root.transform); gem.transform.position = position + Vector3.up * 1.7f;
-        gem.transform.localScale = new Vector3(0.65f, 1.1f, 0.65f);
-        gem.GetComponent<MeshFilter>().sharedMesh = crystalMesh;
-        gem.GetComponent<MeshRenderer>().sharedMaterial = rune;
+        var model = Load<GameObject>("Assets/_ArcanoDungeon/Art/Environments/Castle/Corazon_Arcano.fbx");
+        var gem = (GameObject)PrefabUtility.InstantiatePrefab(model, root.transform);
+        gem.name = "EclipseCrystal";
+        gem.transform.localPosition = Vector3.up * 1.7f;
+        gem.transform.localRotation = Quaternion.Euler(-90f, 0f, 0f);
+        gem.transform.localScale = Vector3.one * 0.7f;
+        gem.AddComponent<CrystalFloat>();
+        CrystalMaterials.Apply(gem);
+        foreach (var renderer in gem.GetComponentsInChildren<Renderer>(true))
+            PrefabUtility.RecordPrefabInstancePropertyModifications(renderer);
         Ring(root.transform, "SealOrbit", position + Vector3.up * 1.7f, 1.1f, gold, false);
         Light(root.transform, position + Vector3.up * 2f, new Color(0.60f, 0.28f, 1f), 3f, 8f);
-        return root;
+        return ConfigureSeal(gem, room);
+    }
+
+    public static EclipseSealCrystal ConfigureSeal(GameObject crystal, RoomController room)
+    {
+        var seal = Undo.AddComponent<EclipseSealCrystal>(crystal);
+        var serialized = new SerializedObject(seal);
+        serialized.FindProperty("room").objectReferenceValue = room;
+        serialized.ApplyModifiedProperties();
+        ConfigureSealShards(seal);
+        var collider = seal.GetComponent<BoxCollider>();
+        Undo.RecordObject(collider, "Size crystal hitbox");
+        var scale = crystal.transform.lossyScale;
+        // Use an even hitbox so the floating crystal can rotate freely above its pedestal.
+        collider.size = new Vector3(1.25f / Mathf.Abs(scale.x), 1.25f / Mathf.Abs(scale.y), 1.25f / Mathf.Abs(scale.z));
+        collider.enabled = false;
+        return seal;
+    }
+
+    public static void ConfigureSealShards(EclipseSealCrystal seal)
+    {
+        var serialized = new SerializedObject(seal);
+        serialized.FindProperty("shardMesh").objectReferenceValue = Load<Mesh>(Art + "EclipseCrystal.asset");
+        serialized.FindProperty("shardMaterial").objectReferenceValue = Load<Material>(Art + "EclipseRune.mat");
+        serialized.ApplyModifiedProperties();
+    }
+
+    public static float GetWallHeight(params GameObject[] heroes)
+    {
+        float tallest = heroes.Where(hero => hero != null)
+            .Select(hero => hero.GetComponent<CharacterController>())
+            .Where(controller => controller != null)
+            .Max(controller => controller.height * Mathf.Abs(controller.transform.lossyScale.y));
+        return Mathf.Max(8f, Mathf.Ceil(tallest * 4f));
+    }
+
+    public static GameObject AddBackdrop(Transform castleRoot)
+    {
+        var foundations = castleRoot.GetComponentsInChildren<Renderer>()
+            .Where(renderer => renderer.name == "Foundation").ToArray();
+        var bounds = foundations[0].bounds;
+        foreach (var foundation in foundations.Skip(1))
+            bounds.Encapsulate(foundation.bounds);
+
+        var backdrop = new GameObject("Entorno del castillo");
+        backdrop.transform.SetParent(castleRoot, false);
+        var material = Load<Material>(Art + "EclipseMasonry.mat");
+        AddBackdropSurface("Suelo exterior", backdrop.transform, material, bounds, bounds.min.y - 1f, 60f);
+        AddBackdropSurface("Techo de piedra", backdrop.transform, material, bounds, bounds.max.y + 10f, 20f);
+        return backdrop;
+    }
+
+    static void AddBackdropSurface(string name, Transform parent, Material material, Bounds bounds, float height, float margin)
+    {
+        var position = new Vector3(bounds.center.x, height, bounds.center.z);
+        var size = new Vector3(bounds.size.x + 2f * margin, 0.8f, bounds.size.z + 2f * margin);
+        var surface = Block(name, parent, position, size, material, false);
+        surface.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.Off;
     }
 
     static GameObject Gate(Transform parent, string name, Vector3 position, bool horizontal, bool sealedGate)
@@ -509,14 +570,6 @@ public static class SetupEclipseCastle
         shadow = Material("EclipseVoid", new Color(0.012f, 0.007f, 0.025f), null, true);
         dust = Load<Material>(Art + "EclipseAsh.mat");
         if (dust == null) { dust = new Material(Shader.Find("Sprites/Default")); AssetDatabase.CreateAsset(dust, Art + "EclipseAsh.mat"); }
-        crystalMesh = Load<Mesh>(Art + "EclipseCrystal.asset");
-        if (crystalMesh == null)
-        {
-            crystalMesh = new Mesh { name = "EclipseCrystal" };
-            crystalMesh.vertices = new[] { Vector3.up, Vector3.down, Vector3.left, Vector3.forward, Vector3.right, Vector3.back };
-            crystalMesh.triangles = new[] { 0, 3, 2, 0, 4, 3, 0, 5, 4, 0, 2, 5, 1, 2, 3, 1, 3, 4, 1, 4, 5, 1, 5, 2 };
-            crystalMesh.RecalculateNormals(); crystalMesh.RecalculateBounds(); AssetDatabase.CreateAsset(crystalMesh, Art + "EclipseCrystal.asset");
-        }
     }
 
     static Material Material(string name, Color color, Material template = null, bool unlit = false)

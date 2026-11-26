@@ -30,6 +30,8 @@ public class RoomController : MonoBehaviour
     public Transform miniBossSpawnPoint;
     public float miniBossScale = 1.4f;
     public int miniBossMaxHealth = 200;
+    public GameObject secondBossPrefab;
+    public Transform secondBossSpawnPoint;
 
     [Header("Puerta / Salida")]
     public GameObject exitDoor;
@@ -48,6 +50,8 @@ public class RoomController : MonoBehaviour
     public bool HasTriggered => hasTriggered;
     public bool IsCleared => isCleared;
     public int ActiveEnemies => activeEnemies;
+    public EnemyHealth FirstBoss { get; private set; }
+    public EnemyHealth SecondBoss { get; private set; }
 
     public static event Action<RoomController> RoomEntered;
     public static event Action<RoomController> RoomCleared;
@@ -103,7 +107,8 @@ public class RoomController : MonoBehaviour
                     return true;
             }
         }
-        return spawnMiniBoss && miniBossSpawnPoint != null;
+        return (spawnMiniBoss && miniBossSpawnPoint != null) ||
+               (secondBossPrefab != null && secondBossSpawnPoint != null);
     }
 
     void OnTriggerExit(Collider other)
@@ -130,7 +135,7 @@ public class RoomController : MonoBehaviour
         if (!isCleared)
             SetDoorsLocked(true);
 
-        if (skeletonPrefab == null && (additionalEnemyPrefabs == null || additionalEnemyPrefabs.Length == 0))
+        if (!HasEnemySetup())
         {
             Debug.LogWarning($"[{roomName}] No hay prefabs de enemigo asignados en RoomController.");
             ClearRoom();
@@ -167,11 +172,20 @@ public class RoomController : MonoBehaviour
                 miniBoss.transform.localScale = bossPrefab.transform.localScale * miniBossScale;
 
                 EnemyHealth bossHealth = miniBoss.GetComponent<EnemyHealth>();
+                FirstBoss = bossHealth;
                 if (bossHealth != null)
                     bossHealth.ConfigureHealth(miniBossMaxHealth);
 
                 RegisterEnemy(miniBoss);
             }
+        }
+
+        if (secondBossPrefab != null && secondBossSpawnPoint != null)
+        {
+            var secondBoss = Instantiate(secondBossPrefab, secondBossSpawnPoint.position + Vector3.up * 0.05f,
+                secondBossSpawnPoint.rotation);
+            SecondBoss = secondBoss.GetComponent<EnemyHealth>();
+            RegisterEnemy(secondBoss);
         }
 
         if (activeEnemies == 0)

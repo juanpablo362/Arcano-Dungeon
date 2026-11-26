@@ -7,6 +7,7 @@ public class TreasureChest : MonoBehaviour
 {
     public GameObject heartPrefab;
     public Transform lidTransform;
+    [SerializeField] Animator chestAnimator;
     public float interactRange = 2.5f;
     public float openLidAngleX = -105f;
     public float lidOpenSpeed = 5f;
@@ -38,7 +39,7 @@ public class TreasureChest : MonoBehaviour
     {
         promptMessage = "Presiona [F] para abrir cofre";
 
-        if (lidTransform == null)
+        if (chestAnimator == null && lidTransform == null)
         {
             Transform foundLid = transform.Find("SquareChest_Top");
             if (foundLid != null)
@@ -59,7 +60,7 @@ public class TreasureChest : MonoBehaviour
     {
         if (isOpened)
         {
-            if (lidTransform != null)
+            if (chestAnimator == null && lidTransform != null)
             {
                 lidTransform.localRotation = Quaternion.Slerp(
                     lidTransform.localRotation,
@@ -96,6 +97,9 @@ public class TreasureChest : MonoBehaviour
             SpawnMimic();
             return null;
         }
+
+        if (chestAnimator != null)
+            chestAnimator.Play("Open", 0, 0f);
 
         Vector3 startPos = transform.position + Vector3.up * 0.55f;
         Vector3 targetPos = transform.position + transform.forward * heartForwardDistance;

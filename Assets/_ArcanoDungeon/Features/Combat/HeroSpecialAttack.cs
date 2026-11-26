@@ -1,4 +1,5 @@
 using System.Collections;
+using ArcanoDungeon.Features.Levels;
 using ArcanoDungeon.Features.Loot;
 using ArcanoDungeon.Features.Player;
 using ArcanoDungeon.Features.Player.View;
@@ -266,9 +267,10 @@ namespace ArcanoDungeon.Features.Combat
         static void ApplyEnemyDamage(Collider col, int damage)
         {
             var enemy = col.GetComponentInParent<EnemyHealth>();
-            if (enemy == null)
-                return;
-            enemy.TakeDamage(damage);
+            if (enemy != null)
+                enemy.TakeDamage(damage);
+            else
+                col.GetComponent<EclipseSealCrystal>()?.TakeDamage(damage);
         }
 
         Vector3 ResolveAim()

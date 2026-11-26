@@ -22,8 +22,10 @@ namespace ArcanoDungeon.Features.Loot
         float launchElapsed;
         bool collected;
         bool settled;
+        int lastCollectedFrame = -1;
 
         public ItemData Item => item;
+        internal bool Reusable { get; set; }
 
         public void Configure(ItemData data)
         {
@@ -151,10 +153,11 @@ namespace ArcanoDungeon.Features.Loot
 
         public void Collect(GameObject playerObj)
         {
-            if (collected || playerObj == null || item == null)
+            if (collected || lastCollectedFrame == Time.frameCount || playerObj == null || item == null)
                 return;
 
-            collected = true;
+            lastCollectedFrame = Time.frameCount;
+            collected = !Reusable;
 
             var inventory = playerObj.GetComponent<PlayerItemInventory>()
                             ?? playerObj.GetComponentInParent<PlayerItemInventory>();
@@ -165,7 +168,8 @@ namespace ArcanoDungeon.Features.Loot
             if (!string.IsNullOrEmpty(msg))
                 InteractionPromptUI.RequestPrompt(msg, 0f);
 
-            Destroy(gameObject);
+            if (collected)
+                Destroy(gameObject);
         }
 
         string GetPrompt()

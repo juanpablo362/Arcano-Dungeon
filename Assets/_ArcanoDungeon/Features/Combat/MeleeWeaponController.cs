@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using ArcanoDungeon.Features.Levels;
 using ArcanoDungeon.Infrastructure.Audio;
 using UnityEngine;
 
@@ -557,22 +558,28 @@ namespace ArcanoDungeon.Features.Combat
         void ApplyHit(Collider col, int damage, Vector3 fallbackPoint)
         {
             EnemyHealth enemy = col.GetComponentInParent<EnemyHealth>();
-            if (enemy == null)
-                return;
-
-            if (!hitThisSwing.Add(enemy))
-                return;
-
+            Vector3 hitPoint = col.ClosestPoint(fallbackPoint);
+            if (enemy != null)
+            {
+                if (!hitThisSwing.Add(enemy))
+                    return;
+                enemy.TakeDamage(damage);
+            }
+            else
+            {
+                var seal = col.GetComponent<EclipseSealCrystal>();
+                if (seal == null || !seal.TakeDamage(damage))
+                    return;
+            }
             swungConnected = true;
-            enemy.TakeDamage(damage);
 
             var catalog = DungeonSfxCatalog.Instance;
             if (catalog != null && catalog.swordHit != null)
                 GameSfx.PlayCombat(catalog.swordHit);
 
-            Vector3 hitPoint = col.ClosestPoint(fallbackPoint);
             lastHitPoint = hitPoint;
-            EnemyHit?.Invoke(enemy, hitPoint);
+            if (enemy != null)
+                EnemyHit?.Invoke(enemy, hitPoint);
 
             // Impacto pequeño solo en hit real; el pop de slash grande va en el finisher.
             if (impactVfxPrefab != null)
@@ -625,7 +632,7 @@ namespace ArcanoDungeon.Features.Combat
         {
             if (!string.IsNullOrEmpty(enemyTag) && col.CompareTag(enemyTag))
                 return true;
-            return col.GetComponentInParent<EnemyHealth>() != null;
+            return col.GetComponentInParent<EnemyHealth>() != null || col.GetComponent<EclipseSealCrystal>() != null;
         }
 
         int damageBonus;

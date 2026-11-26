@@ -1,7 +1,12 @@
 using System.Collections;
 using ArcanoDungeon.Core;
+using ArcanoDungeon.Features.Assassin;
+using ArcanoDungeon.Features.Combat;
 using ArcanoDungeon.Features.Loot;
+using ArcanoDungeon.Features.Player;
 using ArcanoDungeon.Features.Player.Motor;
+using ArcanoDungeon.Infrastructure.Audio;
+using ArcanoDungeon.Infrastructure.Input;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -25,6 +30,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     Renderer[] renderers;
     MaterialPropertyBlock block;
     Coroutine flashRoutine;
+    bool dying;
     static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
     static readonly int ColorId = Shader.PropertyToID("_Color");
     static readonly int EmissionColorId = Shader.PropertyToID("_EmissionColor");
@@ -71,7 +77,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
     public void TakeDamage(int amount)
     {
-        if (motor != null && motor.IsInvulnerable)
+        if (dying || (motor != null && motor.IsInvulnerable))
             return;
 
         if (stats == null)
@@ -85,24 +91,60 @@ public class PlayerHealth : MonoBehaviour, IDamageable
             currentHealth = Mathf.Max(0, currentHealth - remaining);
 
         UpdateHealthUI();
-        PlayHurtFlash();
-
         if (currentHealth <= 0)
+            StartCoroutine(Die());
+        else
+            PlayHurtFlash();
+    }
+
+    IEnumerator Die()
+    {
+        dying = true;
+        if (flashRoutine != null)
+            StopCoroutine(flashRoutine);
+        SetFlash(false);
+
+        foreach (var behaviour in GetComponentsInChildren<MonoBehaviour>())
+            if (behaviour is PlayerController or PlayerMotor or PlayerInputReader or PlayerInteract
+                or MeleeWeaponController or HeroSpecialAttack or AssassinAbilities
+                or TemporaryWeaponController or PowderBombController)
+                behaviour.enabled = false;
+        foreach (var animator in GetComponentsInChildren<Animator>())
+            animator.speed = 0f;
+        foreach (var collider in GetComponentsInChildren<Collider>())
+            collider.enabled = false;
+
+        GameSfx.PlayCombat(DungeonSfxCatalog.Instance?.RandomPlayerDeath());
+
+        const float fallDuration = 0.7f;
+        var upright = transform.rotation;
+        var fallen = upright * Quaternion.Euler(-88f, 0f, 10f);
+        float start = Time.unscaledTime;
+        while (Time.unscaledTime - start < fallDuration)
         {
-            GameSession.ResetRun();
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            float progress = (Time.unscaledTime - start) / fallDuration;
+            transform.rotation = Quaternion.Slerp(upright, fallen, progress * progress);
+            yield return null;
         }
+        transform.rotation = fallen;
+        yield return new WaitForSecondsRealtime(0.8f);
+
+        GameSession.ResetRun();
+        Time.timeScale = 1f;
+        CameraFollow.SetCursorLocked(false);
+        SceneManager.LoadScene("MainMenu");
     }
 
     public void RestoreCurrentHealth(int value)
     {
+        if (dying) return;
         currentHealth = Mathf.Clamp(value, 1, maxHealth);
         UpdateHealthUI();
     }
 
     public void Heal(int amount)
     {
-        if (amount <= 0) return;
+        if (dying || amount <= 0) return;
 
         currentHealth = Mathf.Min(maxHealth, currentHealth + amount);
         UpdateHealthUI();

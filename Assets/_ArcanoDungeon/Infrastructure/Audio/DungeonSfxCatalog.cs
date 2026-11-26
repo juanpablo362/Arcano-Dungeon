@@ -16,6 +16,7 @@ namespace ArcanoDungeon.Infrastructure.Audio
         [Header("Ambient")]
         public AudioClip catacombsWhispers;
         public AudioClip encounterScaryStinger;
+        public AudioClip finalRoomCleared;
 
         [Header("Combat")]
         public AudioClip swordSwing;
@@ -29,6 +30,8 @@ namespace ArcanoDungeon.Infrastructure.Audio
         public AudioClip portalEnter;
         public AudioClip chestOpen;
         public AudioClip knightSpecial;
+        public AudioClip playerDeathScream;
+        public AudioClip playerDeathWhistle;
 
         [Header("Volumes")]
         [Range(0f, 1f)] public float bgmVolume = 0.45f;
@@ -54,6 +57,15 @@ namespace ArcanoDungeon.Infrastructure.Audio
             if (monsterAttackGrowlB == null)
                 return monsterAttackGrowlA;
             return Random.value < 0.5f ? monsterAttackGrowlA : monsterAttackGrowlB;
+        }
+
+        public AudioClip RandomPlayerDeath()
+        {
+            if (playerDeathScream == null)
+                return playerDeathWhistle;
+            if (playerDeathWhistle == null)
+                return playerDeathScream;
+            return Random.value < 0.5f ? playerDeathScream : playerDeathWhistle;
         }
     }
 }

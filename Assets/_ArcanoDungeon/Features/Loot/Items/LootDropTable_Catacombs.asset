@@ -33,12 +33,6 @@ MonoBehaviour:
     weightOverride: 12
   - item: {fileID: 11400000, guid: 56776226c7d245b498fda958c2be4e52, type: 2}
     weightOverride: 8
-  - item: {fileID: 11400000, guid: a8596124c40b4f347861b8390c91fd8f, type: 2}
-    weightOverride: 5
-  - item: {fileID: 11400000, guid: 8333e490926b70f4383e2c786e6dd543, type: 2}
-    weightOverride: 5
-  - item: {fileID: 11400000, guid: 36a6f0372c76d524cb60ce8156772bcf, type: 2}
-    weightOverride: 5
   - item: {fileID: 11400000, guid: a8e681a2411053c4e8d0b5db98ad9068, type: 2}
     weightOverride: 5
   - item: {fileID: 11400000, guid: cdac26f42f3fbdc48badd73e9e5e0ad5, type: 2}

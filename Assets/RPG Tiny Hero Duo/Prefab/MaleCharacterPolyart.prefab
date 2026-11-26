@@ -1720,7 +1720,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53a33a5d07e1dad4bb1e5c7820afaa44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
-  maxHealth: 100
+  maxHealth: 135
   currentHealth: 100
   healthSlider: {fileID: 0}
   healthText: {fileID: 0}
@@ -1747,10 +1747,10 @@ MonoBehaviour:
   characterController: {fileID: 3756132365130405504}
   attackStyle: 0
   fallbackWeaponLength: 1.7
-  reachMultiplier: 1.95
+  reachMultiplier: 2.45
   arcAngle: 110
   crossFadeDuration: 0.08
-  damagePerStep: 1c0000002000000030000000i
+  damagePerStep: 280000002e00000040000000
   punctualRadius: 0.55
   inputBufferWindow: 0.35
   comboResetTime: 0.7
@@ -1840,10 +1840,10 @@ MonoBehaviour:
   fireballPrefab: {fileID: 2289681464098246232, guid: e37266e31d6a4fa488e496a88665faea, type: 3}
   cooldown: 0.85
   mageDamage: 70
-  knightDamage: 55
+  knightDamage: 75
   misakiDamage: 42
   yukoDamage: 60
-  knightRadius: 3.2
+  knightRadius: 4.2
   misakiRange: 3.8
   yukoRadius: 3.6
 --- !u!1 &5691243874327788079

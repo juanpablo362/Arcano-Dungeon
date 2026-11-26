@@ -111,7 +111,7 @@ public class ControlsGuide : MonoBehaviour
         rt.sizeDelta = size;
     }
 
-    static GameObject CreatePanel(Transform parent, string name, Vector2 size)
+    internal static GameObject CreatePanel(Transform parent, string name, Vector2 size)
     {
         var go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
         go.transform.SetParent(parent, false);
@@ -122,7 +122,7 @@ public class ControlsGuide : MonoBehaviour
         return go;
     }
 
-    static Button CreateButton(Transform parent, string name, string label, Vector2 anchoredFromBottom, Vector2 size)
+    internal static Button CreateButton(Transform parent, string name, string label, Vector2 anchoredFromBottom, Vector2 size)
     {
         var go = CreatePanel(parent, name, size);
         var rt = go.GetComponent<RectTransform>();
@@ -137,7 +137,7 @@ public class ControlsGuide : MonoBehaviour
         return button;
     }
 
-    static Text CreateText(Transform parent, string name, string value, int size, FontStyle style, Color color, TextAnchor align)
+    internal static Text CreateText(Transform parent, string name, string value, int size, FontStyle style, Color color, TextAnchor align)
     {
         var go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
         go.transform.SetParent(parent, false);
@@ -156,7 +156,7 @@ public class ControlsGuide : MonoBehaviour
         return text;
     }
 
-    static void Stretch(RectTransform rt)
+    internal static void Stretch(RectTransform rt)
     {
         rt.anchorMin = Vector2.zero;
         rt.anchorMax = Vector2.one;

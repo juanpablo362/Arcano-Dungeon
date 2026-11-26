@@ -1,3 +1,4 @@
+using ArcanoDungeon.Features.Levels;
 using UnityEngine;
 
 namespace ArcanoDungeon.Features.Assassin
@@ -44,6 +45,8 @@ namespace ArcanoDungeon.Features.Assassin
         {
             consumed = true;
             var enemy = collider.GetComponentInParent<EnemyHealth>();
+            if (enemy == null)
+                collider.GetComponent<EclipseSealCrystal>()?.TakeDamage(damage);
             if (enemy != null && !enemy.IsDead)
             {
                 enemy.TakeDamage(damage);

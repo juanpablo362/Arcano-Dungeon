@@ -18,6 +18,7 @@ MonoBehaviour:
   level2SecondRoomStinger: {fileID: 8300000, guid: 0dce9f35740195a46bcaa3961fe3aa50, type: 3}
   catacombsWhispers: {fileID: 8300000, guid: 72784a92c1a53864490b6574411ad7c4, type: 3}
   encounterScaryStinger: {fileID: 8300000, guid: 43c8e2aa3a7d72445b7692d294c135ef, type: 3}
+  finalRoomCleared: {fileID: 8300000, guid: 0f137d668ed44c72aabfa98f09f88068, type: 3}
   swordSwing: {fileID: 8300000, guid: 5d82885f6d7997b4d8c11747207f031c, type: 3}
   swordHit: {fileID: 8300000, guid: cec676c903488d84fafa927ca3ef9b8b, type: 3}
   skeletonHit: {fileID: 8300000, guid: 0740974424dd5d647a497261b4abb2e9, type: 3}
@@ -29,6 +30,8 @@ MonoBehaviour:
   portalEnter: {fileID: 8300000, guid: a91c4e7b2d8f46a0b5e3c1d9f7a60428, type: 3}
   chestOpen: {fileID: 8300000, guid: b2d8e5a14c7f49e3a6b0d9c2f1e8a735, type: 3}
   knightSpecial: {fileID: 8300000, guid: c3e9f6b25d8a40f1b7c4e0d3a2f9b846, type: 3}
+  playerDeathScream: {fileID: 8300000, guid: 119787f125374f2cb01ceb8b778797e0, type: 3}
+  playerDeathWhistle: {fileID: 8300000, guid: 627d6cfaaeda41e89d2fba8ab5506b7c, type: 3}
   bgmVolume: 0.55
   whispersVolume: 0.18
   stingerVolume: 0.55

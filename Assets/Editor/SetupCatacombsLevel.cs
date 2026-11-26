@@ -23,8 +23,8 @@ public static class SetupCatacombsLevel
     const string Monsters = "Assets/_ArcanoDungeon/Prefabs/Monsters/";
     const string Chest = "Assets/Prefabs/TreasureChest.prefab";
 
-    const float Gap = 6f;
     const float DoorGap = 5f;
+    const float BoundaryHeight = 8f;
 
     static Material kitMat;
     static Material goldMat;
@@ -59,6 +59,38 @@ public static class SetupCatacombsLevel
         public GameObject Knight;
         public GameObject Misaki;
         public GameObject Yuko;
+        public GameObject Assassin;
+    }
+
+    public static void RebuildCatacombs()
+    {
+        if (EditorApplication.isPlayingOrWillChangePlaymode)
+            throw new System.InvalidOperationException("Sal de Play Mode antes de reconstruir Catacumbas.");
+        for (int i = 0; i < UnityEngine.SceneManagement.SceneManager.sceneCount; i++)
+            if (UnityEngine.SceneManagement.SceneManager.GetSceneAt(i).isDirty)
+                throw new System.InvalidOperationException("Guarda los cambios abiertos antes de reconstruir Catacumbas.");
+
+        var preview = EditorSceneManager.OpenPreviewScene(Level2);
+        Heroes heroes;
+        try
+        {
+            PlayerSpawner source = null;
+            foreach (var root in preview.GetRootGameObjects())
+            {
+                source = root.GetComponentInChildren<PlayerSpawner>();
+                if (source != null) break;
+            }
+            if (source == null)
+                throw new System.InvalidOperationException("No se encontró el punto de inicio de Catacumbas.");
+            heroes = new Heroes
+            {
+                Mage = source.magePrefab, Knight = source.knightPrefab, Misaki = source.misakiPrefab,
+                Yuko = source.yukoPrefab, Assassin = source.assassinPrefab
+            };
+        }
+        finally { EditorSceneManager.ClosePreviewScene(preview); }
+
+        BuildLevel(heroes);
     }
 
     static Heroes ReadHeroesAndRetargetExit()
@@ -72,6 +104,7 @@ public static class SetupCatacombsLevel
             heroes.Knight = source.knightPrefab;
             heroes.Misaki = source.misakiPrefab;
             heroes.Yuko = source.yukoPrefab;
+            heroes.Assassin = source.assassinPrefab;
         }
 
         foreach (var exit in Object.FindObjectsByType<LevelExit>(FindObjectsInactive.Include))
@@ -104,40 +137,42 @@ public static class SetupCatacombsLevel
         TuneAtmosphere();
         EnsureFollowCamera();
 
-        var cemetery = Room("Cementerio", new Vector2(18f, 16f), Vector3.zero);
-        var gallery = Room("Galeria", new Vector2(16f, 14f),
-            new Vector3(0f, 0f, cemetery.Depth * 0.5f + Gap + 7f));
-        var ossuary = Room("Osario", new Vector2(14f, 14f),
-            new Vector3(gallery.Width * 0.5f + Gap + 7f, 0f, gallery.Center.z));
-        var reliquary = Room("Relicario", new Vector2(14f, 12f),
-            new Vector3(0f, 0f, gallery.Center.z + gallery.Depth * 0.5f + Gap + 6f));
-        var crypt = Room("Cripta", new Vector2(16f, 16f),
-            new Vector3(0f, 0f, reliquary.Center.z + reliquary.Depth * 0.5f + Gap + 8f));
+        var cemetery = Room("Cementerio", new Vector2(22f, 20f), Vector3.zero);
+        var gallery = Room("Galeria", new Vector2(20f, 18f), new Vector3(0f, 0f, 25f));
+        var ossuary = Room("Osario", new Vector2(18f, 18f), new Vector3(25f, 0f, 25f));
+        var reliquary = Room("Relicario", new Vector2(18f, 16f), new Vector3(0f, 0f, 48f));
+        var wake = Room("Velatorio", new Vector2(20f, 18f), new Vector3(0f, 0f, 71f));
+        var chapel = Room("Capilla", new Vector2(18f, 18f), new Vector3(-25f, 0f, 71f));
+        var crypt = Room("Cripta", new Vector2(30f, 28f), new Vector3(0f, 0f, 102f));
 
         var rooms = new Dictionary<string, RoomController>();
         rooms["Cementerio"] = MakeRoom(root.transform, cemetery, "Cementerio", RoomController.RoomKind.Start, false, true, false, false);
         rooms["Galeria"] = MakeRoom(root.transform, gallery, "Galería de nichos", RoomController.RoomKind.Combat, true, true, true, false);
         rooms["Osario"] = MakeRoom(root.transform, ossuary, "Osario", RoomController.RoomKind.Combat, false, false, false, true);
         rooms["Relicario"] = MakeRoom(root.transform, reliquary, "Relicario", RoomController.RoomKind.Treasure, true, true, false, false);
+        rooms["Velatorio"] = MakeRoom(root.transform, wake, "Velatorio", RoomController.RoomKind.Combat, true, true, false, true);
+        rooms["Capilla"] = MakeRoom(root.transform, chapel, "Capilla", RoomController.RoomKind.Combat, false, false, true, false);
         rooms["Cripta"] = MakeRoom(root.transform, crypt, "Cripta", RoomController.RoomKind.Boss, true, false, false, false);
 
-        LinkCorridor(root.transform, cemetery, gallery, north: true);
-        LinkCorridor(root.transform, gallery, ossuary, north: false);
-        LinkCorridor(root.transform, gallery, reliquary, north: true);
-        LinkCorridor(root.transform, reliquary, crypt, north: true);
+        Connect(root.transform, rooms["Cementerio"], cemetery, rooms["Galeria"], gallery, north: true);
+        Connect(root.transform, rooms["Galeria"], gallery, rooms["Osario"], ossuary, north: false);
+        Connect(root.transform, rooms["Galeria"], gallery, rooms["Relicario"], reliquary, north: true);
+        Connect(root.transform, rooms["Relicario"], reliquary, rooms["Velatorio"], wake, north: true);
+        Connect(root.transform, rooms["Capilla"], chapel, rooms["Velatorio"], wake, north: false);
+        Connect(root.transform, rooms["Velatorio"], wake, rooms["Cripta"], crypt, north: true);
+        AddContinuousGround(root.transform, rooms, floorY);
 
         DressCemetery(rooms["Cementerio"].transform, cemetery);
         DressGallery(rooms["Galeria"].transform, gallery);
         DressOssuary(rooms["Osario"].transform, ossuary);
         DressReliquary(rooms["Relicario"].transform, reliquary);
+        DressOssuary(rooms["Velatorio"].transform, wake);
+        DressReliquary(rooms["Capilla"].transform, chapel);
         DressCrypt(rooms["Cripta"].transform, crypt);
+        foreach (var room in rooms.Values)
+            WarmLight(room.transform, room.transform.position + Vector3.up * (floorY + 4f), 8.5f, 3.5f);
 
         WireEnemies(rooms);
-        WireDoors(rooms, cemetery, gallery, ossuary, reliquary, crypt);
-        Link(rooms, "Cementerio", "Galeria");
-        Link(rooms, "Galeria", "Osario");
-        Link(rooms, "Galeria", "Relicario");
-        Link(rooms, "Relicario", "Cripta");
 
         var exit = new GameObject("CryptExit");
         exit.transform.SetParent(rooms["Cripta"].transform, true);
@@ -160,6 +195,7 @@ public static class SetupCatacombsLevel
         spawner.knightPrefab = heroes.Knight;
         spawner.misakiPrefab = heroes.Misaki;
         spawner.yukoPrefab = heroes.Yuko;
+        spawner.assassinPrefab = heroes.Assassin;
         spawner.startPosition = start.transform;
 
         var pause = new GameObject("PauseMenu");
@@ -220,11 +256,11 @@ public static class SetupCatacombsLevel
 
     static void Perimeter(Transform parent, RoomSize size, bool south, bool north, bool east, bool west)
     {
-        float y = floorY + 1.5f;
-        Side(parent, size.Center + new Vector3(0f, y, size.Depth * 0.5f), new Vector3(size.Width, 3f, 0.45f), north, true);
-        Side(parent, size.Center + new Vector3(0f, y, -size.Depth * 0.5f), new Vector3(size.Width, 3f, 0.45f), south, true);
-        Side(parent, size.Center + new Vector3(size.Width * 0.5f, y, 0f), new Vector3(0.45f, 3f, size.Depth), east, false);
-        Side(parent, size.Center + new Vector3(-size.Width * 0.5f, y, 0f), new Vector3(0.45f, 3f, size.Depth), west, false);
+        float y = floorY + BoundaryHeight * 0.5f;
+        Side(parent, size.Center + new Vector3(0f, y, size.Depth * 0.5f), new Vector3(size.Width, BoundaryHeight, 0.45f), north, true);
+        Side(parent, size.Center + new Vector3(0f, y, -size.Depth * 0.5f), new Vector3(size.Width, BoundaryHeight, 0.45f), south, true);
+        Side(parent, size.Center + new Vector3(size.Width * 0.5f, y, 0f), new Vector3(0.45f, BoundaryHeight, size.Depth), east, false);
+        Side(parent, size.Center + new Vector3(-size.Width * 0.5f, y, 0f), new Vector3(0.45f, BoundaryHeight, size.Depth), west, false);
         FenceRing(parent, size, south, north, east, west);
     }
 
@@ -257,6 +293,13 @@ public static class SetupCatacombsLevel
         go.transform.SetParent(parent, true);
         go.transform.position = world;
         go.AddComponent<BoxCollider>().size = size;
+        var trim = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        trim.name = "Base de piedra";
+        trim.transform.SetParent(go.transform, false);
+        trim.transform.localPosition = Vector3.down * (size.y * 0.5f - 0.55f);
+        trim.transform.localScale = new Vector3(size.x, 1.1f, size.z);
+        trim.GetComponent<MeshRenderer>().sharedMaterial = frameMat;
+        Object.DestroyImmediate(trim.GetComponent<BoxCollider>());
     }
 
     static void FenceRing(Transform parent, RoomSize size, bool south, bool north, bool east, bool west)
@@ -287,7 +330,7 @@ public static class SetupCatacombsLevel
         }
     }
 
-    static void LinkCorridor(Transform root, RoomSize a, RoomSize b, bool north)
+    static void Connect(Transform root, RoomController first, RoomSize a, RoomController second, RoomSize b, bool north)
     {
         Vector3 from = north
             ? a.Center + new Vector3(0f, 0f, a.Depth * 0.5f)
@@ -299,8 +342,30 @@ public static class SetupCatacombsLevel
         var delta = to - from;
         float length = delta.magnitude + 1.2f;
         bool eastWest = Mathf.Abs(delta.x) > Mathf.Abs(delta.z);
-        TileRect(root, mid, eastWest ? length : 5f, eastWest ? 5f : length, "path_A.fbx");
-        Spawn("arch.fbx", mid, root, eastWest ? 90f : 0f, solid: false);
+        var path = new GameObject(first.name + " - " + second.name);
+        path.transform.SetParent(root, false);
+        TileRect(path.transform, mid, eastWest ? length : DoorGap, eastWest ? DoorGap : length, "path_A.fbx");
+        Spawn("arch.fbx", mid, path.transform, eastWest ? 90f : 0f, solid: false);
+        Vector3 railOffset = (eastWest ? Vector3.forward : Vector3.right) * (DoorGap * 0.5f + 0.15f);
+        Vector3 railSize = eastWest ? new Vector3(length, BoundaryHeight, 0.45f) : new Vector3(0.45f, BoundaryHeight, length);
+        Vector3 railCenter = mid + Vector3.up * (floorY + BoundaryHeight * 0.5f);
+        Block(path.transform, railCenter - railOffset, railSize);
+        Block(path.transform, railCenter + railOffset, railSize);
+
+        var gate = Gate(path.transform, "Reja de combate", Midpoint(from, to),
+            eastWest ? new Vector3(0.45f, BoundaryHeight, DoorGap) : new Vector3(DoorGap, BoundaryHeight, 0.45f));
+        AttachGate(first, gate);
+        AttachGate(second, gate);
+        AddLink(first, second);
+        AddLink(second, first);
+    }
+
+    static void AttachGate(RoomController room, GameObject gate)
+    {
+        if (room.roomKind == RoomController.RoomKind.Start || room.roomKind == RoomController.RoomKind.Treasure)
+            return;
+        var gates = new List<GameObject>(room.exitDoors ?? System.Array.Empty<GameObject>()) { gate };
+        room.exitDoors = gates.ToArray();
     }
 
     static void DressCemetery(Transform room, RoomSize size)
@@ -363,6 +428,11 @@ public static class SetupCatacombsLevel
             copy.transform.SetParent(room, true);
             copy.transform.position = c + new Vector3(0f, floorY, 0.4f);
             copy.transform.rotation = Quaternion.identity;
+            var loot = copy.GetComponent<TreasureChest>();
+            loot.dropTable = AssetDatabase.LoadAssetAtPath<ArcanoDungeon.Features.Loot.LootDropTable>(
+                "Assets/_ArcanoDungeon/Features/Loot/Items/LootDropTable_Catacombs.asset");
+            loot.allowMimic = true;
+            PrefabUtility.RecordPrefabInstancePropertyModifications(loot);
         }
         WarmLight(room, c + new Vector3(0f, 1.6f, 2.2f), 6f);
     }
@@ -380,6 +450,22 @@ public static class SetupCatacombsLevel
         WarmLight(room, c + new Vector3(3f, 1.3f, 0.5f), 6f);
     }
 
+    static void AddContinuousGround(Transform parent, Dictionary<string, RoomController> rooms, float surfaceY)
+    {
+        var coverage = rooms["Cementerio"].GetComponent<BoxCollider>().bounds;
+        foreach (var room in rooms.Values)
+            coverage.Encapsulate(room.GetComponent<BoxCollider>().bounds);
+
+        var ground = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        ground.name = "Suelo continuo";
+        ground.transform.SetParent(parent, false);
+        ground.transform.position = new Vector3(coverage.center.x, surfaceY - 0.55f, coverage.center.z);
+        ground.transform.localScale = new Vector3(Mathf.Max(136f, coverage.size.x + 36f), 1f, Mathf.Max(175f, coverage.size.z + 36f));
+        ground.GetComponent<MeshFilter>().sharedMesh = AssetDatabase.LoadAssetAtPath<Mesh>(
+            "Assets/_ArcanoDungeon/Art/Environments/Castle/CatacombsContinuousFloor.asset");
+        ground.GetComponent<MeshRenderer>().sharedMaterial = kitMat;
+    }
+
     static void WireEnemies(Dictionary<string, RoomController> rooms)
     {
         var skeleton = LoadPrefab(Skeleton);
@@ -388,11 +474,13 @@ public static class SetupCatacombsLevel
         var packSkeleton = LoadPrefab(Monsters + "EnemyPackSkeleton.prefab");
         var wolf = LoadPrefab(Monsters + "EnemyWerewolf.prefab");
         var mage = LoadPrefab(Monsters + "EnemySkellMage.prefab");
-        var minotaur = LoadPrefab(Monsters + "EnemyMinotaur.prefab");
+        var monster4 = LoadPrefab(Monsters + "EnemyMonster4.prefab");
 
         AssignCombat(rooms["Galeria"], skeleton, new[] { warrior }, false, null);
         AssignCombat(rooms["Osario"], orc, new[] { packSkeleton }, false, null);
-        AssignCombat(rooms["Cripta"], wolf, new[] { mage }, true, minotaur);
+        AssignCombat(rooms["Velatorio"], warrior, new[] { mage }, false, null);
+        AssignCombat(rooms["Capilla"], mage, new[] { packSkeleton }, false, null);
+        AssignCombat(rooms["Cripta"], wolf, new[] { mage }, true, monster4);
     }
 
     static void AssignCombat(RoomController room, GameObject primary, GameObject[] extra, bool boss, GameObject mini)
@@ -406,10 +494,10 @@ public static class SetupCatacombsLevel
         if (!boss)
             return;
         room.miniBossPrefab = mini;
-        room.miniBossScale = 1f;
+        room.miniBossScale = 1.5f;
         room.miniBossMaxHealth = 240;
         room.miniBossSpawnPoint = SpawnPoint(room.transform, "MiniBossSpawn",
-            room.transform.position + new Vector3(0f, floorY + 0.15f, 1.5f));
+            room.transform.position + new Vector3(0f, floorY + 0.15f, -4f));
     }
 
     static Transform SpawnPoint(Transform parent, string name, Vector3 world)
@@ -418,35 +506,6 @@ public static class SetupCatacombsLevel
         go.transform.SetParent(parent, true);
         go.transform.position = world;
         return go.transform;
-    }
-
-    static void WireDoors(Dictionary<string, RoomController> rooms, RoomSize cemetery, RoomSize gallery, RoomSize ossuary, RoomSize reliquary, RoomSize crypt)
-    {
-        var doors = new List<GameObject>();
-        doors.Add(Gate(rooms["Galeria"].transform, "CombatDoor_Galeria_South",
-            Midpoint(gallery.Center + new Vector3(0f, 0f, -gallery.Depth * 0.5f), cemetery.Center + new Vector3(0f, 0f, cemetery.Depth * 0.5f)),
-            new Vector3(DoorGap, 8f, 0.45f)));
-        doors.Add(Gate(rooms["Galeria"].transform, "CombatDoor_Galeria_East",
-            Midpoint(gallery.Center + new Vector3(gallery.Width * 0.5f, 0f, 0f), ossuary.Center + new Vector3(-ossuary.Width * 0.5f, 0f, 0f)),
-            new Vector3(0.45f, 8f, DoorGap)));
-        doors.Add(Gate(rooms["Galeria"].transform, "CombatDoor_Galeria_North",
-            Midpoint(gallery.Center + new Vector3(0f, 0f, gallery.Depth * 0.5f), reliquary.Center + new Vector3(0f, 0f, -reliquary.Depth * 0.5f)),
-            new Vector3(DoorGap, 8f, 0.45f)));
-        rooms["Galeria"].exitDoors = doors.ToArray();
-
-        rooms["Osario"].exitDoors = new[]
-        {
-            Gate(rooms["Osario"].transform, "CombatDoor_Osario_West",
-                Midpoint(gallery.Center + new Vector3(gallery.Width * 0.5f, 0f, 0f), ossuary.Center + new Vector3(-ossuary.Width * 0.5f, 0f, 0f)),
-                new Vector3(0.45f, 8f, DoorGap))
-        };
-
-        rooms["Cripta"].exitDoors = new[]
-        {
-            Gate(rooms["Cripta"].transform, "CombatDoor_Cripta_South",
-                Midpoint(reliquary.Center + new Vector3(0f, 0f, reliquary.Depth * 0.5f), crypt.Center + new Vector3(0f, 0f, -crypt.Depth * 0.5f)),
-                new Vector3(DoorGap, 8f, 0.45f))
-        };
     }
 
     static Vector3 Midpoint(Vector3 a, Vector3 b)
@@ -495,12 +554,6 @@ public static class SetupCatacombsLevel
         go.transform.localScale = localScale;
         Object.DestroyImmediate(go.GetComponent<Collider>());
         go.GetComponent<MeshRenderer>().sharedMaterial = mat;
-    }
-
-    static void Link(Dictionary<string, RoomController> map, string a, string b)
-    {
-        AddLink(map[a], map[b]);
-        AddLink(map[b], map[a]);
     }
 
     static void AddLink(RoomController room, RoomController other)
@@ -603,7 +656,7 @@ public static class SetupCatacombsLevel
         return bounds;
     }
 
-    static void WarmLight(Transform parent, Vector3 pos, float range)
+    static void WarmLight(Transform parent, Vector3 pos, float range, float intensity = 1.6f)
     {
         var go = new GameObject("CandleLight");
         go.transform.SetParent(parent, true);
@@ -611,19 +664,25 @@ public static class SetupCatacombsLevel
         var light = go.AddComponent<Light>();
         light.type = LightType.Point;
         light.color = new Color(1f, 0.62f, 0.32f);
-        light.intensity = 1.6f;
+        light.intensity = intensity;
         light.range = range;
         light.shadows = LightShadows.None;
     }
 
     static void TuneLight()
     {
-        var light = Object.FindAnyObjectByType<Light>();
+        Light light = null;
+        foreach (var candidate in Object.FindObjectsByType<Light>())
+        {
+            if (candidate.type != LightType.Directional) continue;
+            light = candidate;
+            break;
+        }
         if (light == null)
             return;
         light.type = LightType.Directional;
         light.color = new Color(0.62f, 0.74f, 1f);
-        light.intensity = 0.55f;
+        light.intensity = 0.16f;
         light.shadows = LightShadows.Soft;
         light.transform.rotation = Quaternion.Euler(52f, -35f, 0f);
     }
@@ -663,12 +722,12 @@ public static class SetupCatacombsLevel
         RenderSettings.fog = true;
         RenderSettings.fogMode = FogMode.Exponential;
         RenderSettings.fogColor = new Color(0.04f, 0.05f, 0.09f);
-        RenderSettings.fogDensity = 0.01f;
+        RenderSettings.fogDensity = 0.023f;
         RenderSettings.ambientMode = AmbientMode.Flat;
-        RenderSettings.ambientLight = new Color(0.07f, 0.08f, 0.12f);
+        RenderSettings.ambientLight = new Color(0.035f, 0.046f, 0.08f);
         RenderSettings.skybox = EnsureNightSky();
         if (RenderSettings.sun != null)
-            RenderSettings.sun.intensity = 0.35f;
+            RenderSettings.sun.intensity = 0.16f;
     }
 
     public static Material EnsureNightSky()

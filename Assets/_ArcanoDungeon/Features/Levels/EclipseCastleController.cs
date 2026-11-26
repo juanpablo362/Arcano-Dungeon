@@ -9,8 +9,7 @@ namespace ArcanoDungeon.Features.Levels
 {
     public sealed class EclipseCastleController : MonoBehaviour
     {
-        public RoomController[] sealRooms;
-        public GameObject[] sealBeacons;
+        public EclipseSealCrystal[] seals;
         public RoomController throneRoom;
         public GameObject throneBarrier;
         public bool Victory { get; private set; }
@@ -21,13 +20,24 @@ namespace ArcanoDungeon.Features.Levels
         static readonly Color Panel = new Color(0.055f, 0.045f, 0.10f, 0.94f);
         Canvas canvas;
         Text objective;
-        Text bossLabel;
-        Image bossFill;
-        RectTransform bossPanel;
-        EnemyHealth boss;
+        (RectTransform Panel, Text Label, Image Fill) regentBar;
+        (RectTransform Panel, Text Label, Image Fill) monsterBar;
 
-        void OnEnable() => RoomController.RoomCleared += OnRoomCleared;
-        void OnDisable() => RoomController.RoomCleared -= OnRoomCleared;
+        void OnEnable()
+        {
+            RoomController.RoomCleared += OnRoomCleared;
+            if (seals != null)
+                foreach (var seal in seals)
+                    if (seal != null) seal.Broken += RefreshSeals;
+        }
+
+        void OnDisable()
+        {
+            RoomController.RoomCleared -= OnRoomCleared;
+            if (seals != null)
+                foreach (var seal in seals)
+                    if (seal != null) seal.Broken -= RefreshSeals;
+        }
 
         void Start()
         {
@@ -43,45 +53,49 @@ namespace ArcanoDungeon.Features.Levels
 
         void OnRoomCleared(RoomController room)
         {
-            RefreshSeals();
-            if (room == throneRoom && objective != null)
-                objective.text = "El Regente ha caído. Cruza el portal y disipa el eclipse.";
+            if (seals != null)
+                foreach (var seal in seals)
+                    if (seal != null) seal.Unlock(room);
+            if (room != throneRoom)
+                return;
+
+            GameSfx.PlayStinger(DungeonSfxCatalog.Instance?.finalRoomCleared);
+            if (objective != null)
+                objective.text = "El trono ha caído. Cruza el portal y disipa el eclipse.";
         }
 
         void RefreshSeals()
         {
             SealsBroken = 0;
-            if (sealRooms != null)
-                for (int i = 0; i < sealRooms.Length; i++)
-                {
-                    bool cleared = sealRooms[i] != null && sealRooms[i].IsCleared;
-                    if (cleared) SealsBroken++;
-                    if (sealBeacons != null && i < sealBeacons.Length && sealBeacons[i] != null)
-                        sealBeacons[i].SetActive(!cleared);
-                }
-            bool unlocked = sealRooms != null && sealRooms.Length > 0 && SealsBroken == sealRooms.Length;
+            if (seals != null)
+                foreach (var seal in seals)
+                    if (seal != null && seal.IsBroken) SealsBroken++;
+            bool unlocked = seals != null && seals.Length > 0 && SealsBroken == seals.Length;
             if (throneBarrier != null)
                 throneBarrier.SetActive(!unlocked);
             if (objective != null)
-                objective.text = unlocked ? "El trono está abierto. Derrota al Regente del Eclipse."
-                    : $"Rompe los sellos de la Armería y la Capilla  ·  {SealsBroken}/2";
+                objective.text = unlocked ? "El trono está abierto. Derrota a sus guardianes."
+                    : $"Limpia cada sala y golpea su cristal  ·  {SealsBroken}/{seals?.Length ?? 0}";
         }
 
         void Update()
         {
             if (Victory || throneRoom == null || !throneRoom.HasTriggered)
                 return;
-            if (boss == null && !throneRoom.IsCleared)
-            {
-                var attack = FindAnyObjectByType<EclipseBossAttack>();
-                if (attack != null) boss = attack.GetComponent<EnemyHealth>();
-            }
-            bool show = boss != null && !boss.IsDead && !throneRoom.IsCleared;
-            bossPanel.gameObject.SetActive(show);
+            UpdateBossBar(regentBar, throneRoom.FirstBoss, "REGENTE DEL ECLIPSE");
+            UpdateBossBar(monsterBar, throneRoom.SecondBoss, "MONSTER LOW POLY");
+        }
+
+        static void UpdateBossBar((RectTransform Panel, Text Label, Image Fill) bar, EnemyHealth boss, string title)
+        {
+            if (bar.Panel == null)
+                return;
+            bool show = boss != null && !boss.IsDead;
+            bar.Panel.gameObject.SetActive(show);
             if (show)
             {
-                bossFill.fillAmount = boss.maxHealth > 0 ? (float)boss.currentHealth / boss.maxHealth : 0f;
-                bossLabel.text = $"REGENTE DEL ECLIPSE   {boss.currentHealth} / {boss.maxHealth}";
+                bar.Fill.fillAmount = boss.maxHealth > 0 ? (float)boss.currentHealth / boss.maxHealth : 0f;
+                bar.Label.text = $"{title}   {boss.currentHealth} / {boss.maxHealth}";
             }
         }
 
@@ -134,20 +148,28 @@ namespace ArcanoDungeon.Features.Levels
             image.raycastTarget = false;
             Label(top, "III  ·  CASTILLO ECLIPSE", 25, Gold, new Vector2(0f, 20f), new Vector2(710f, 35f));
             objective = Label(top, "", 20, Ink, new Vector2(0f, -20f), new Vector2(710f, 35f));
-            bossPanel = Rect("BossHealth", root.transform, new Vector2(620f, 60f));
+            regentBar = CreateBossBar(root.transform, "RegentHealth", 100f);
+            if (throneRoom != null && throneRoom.secondBossPrefab != null)
+                monsterBar = CreateBossBar(root.transform, "MonsterHealth", 168f);
+        }
+
+        static (RectTransform, Text, Image) CreateBossBar(Transform parent, string name, float y)
+        {
+            var bossPanel = Rect(name, parent, new Vector2(620f, 60f));
             bossPanel.anchorMin = bossPanel.anchorMax = new Vector2(0.5f, 0f);
-            bossPanel.anchoredPosition = new Vector2(0f, 100f);
+            bossPanel.anchoredPosition = new Vector2(0f, y);
             bossPanel.gameObject.AddComponent<Image>().color = Panel;
-            bossLabel = Label(bossPanel, "REGENTE DEL ECLIPSE", 19, Ink, new Vector2(0f, 13f), new Vector2(600f, 30f));
+            var bossLabel = Label(bossPanel, "", 19, Ink, new Vector2(0f, 13f), new Vector2(600f, 30f));
             var bar = Rect("Fill", bossPanel, new Vector2(590f, 9f));
             bar.anchoredPosition = new Vector2(0f, -15f);
-            bossFill = bar.gameObject.AddComponent<Image>();
+            var bossFill = bar.gameObject.AddComponent<Image>();
             bossFill.sprite = Sprite.Create(Texture2D.whiteTexture, new Rect(0f, 0f, 1f, 1f), new Vector2(0.5f, 0.5f));
             bossFill.color = Gold;
             bossFill.type = Image.Type.Filled;
             bossFill.fillMethod = Image.FillMethod.Horizontal;
             bossFill.fillOrigin = 0;
             bossPanel.gameObject.SetActive(false);
+            return (bossPanel, bossLabel, bossFill);
         }
 
         static RectTransform Rect(string name, Transform parent, Vector2 size)
